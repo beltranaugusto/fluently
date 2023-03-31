@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { Shell } from "./pages/Shell.jsx";
+import { LoginRegister } from "./pages/LoginRegister.jsx";
 import injectContext from "./store/appContext";
 
 
@@ -14,17 +15,18 @@ const Layout = () => {
     const basename = process.env.BASENAME || "";
 
     return (
-        <div>
+        <>
             <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme: 'dark' }}>
             <BrowserRouter basename={basename}>
                 
                     <Routes>
-                        <Route element={<Shell />} path="/" />
+                        <Route element={<LoginRegister />} path="/" />
+                        <Route element={<Shell />} path="/home" />
                     </Routes>
                 
             </BrowserRouter>
             </MantineProvider>
-        </div>
+        </>
     );
 };
 
