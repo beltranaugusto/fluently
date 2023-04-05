@@ -1,14 +1,28 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../store/appContext";
+import { useNavigate } from 'react-router-dom';
+
 
 // Mantine Components and Icons import.
 import { useForm } from '@mantine/form';
-import { Lock, At } from 'tabler-icons-react';
-import { Button, Group, Box, TextInput, PasswordInput, Title, Space, Divider, Stack } from '@mantine/core';
+import { Lock, At, X } from 'tabler-icons-react';
+import { Button, Group, Box, TextInput, PasswordInput, Title, Space, Divider, Stack, Notification } from '@mantine/core';
 
 export const Login = (props) => {
 
     const { store, actions } = useContext(Context);
+    const navigate = useNavigate();
+
+    // State for checking if the login failed.
+    const [loginFailed, setLoginFailed] = useState(false);
+
+    useEffect(() => {
+
+        // Redirection to home if user is already logged.
+        if (store.token != null) {
+            navigate("/home");
+        }
+    }, [store.token, loginFailed]);
 
     // I'm using the Form feature of Mantine to capture and validate the form values.
     const form = useForm({
@@ -22,32 +36,26 @@ export const Login = (props) => {
         // Setting up the validation conditions.
         validate: {
             email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-            password: (value) => (value.length > 8 ? null : 'Invalid Password'),
+            password: (value) => (value.length > 7 ? null : 'Invalid Password'),
         },
     });
 
+
     return (
         <>
-            <Title order={3} className="text-center">DuoLingo</Title>
+            <Title order={3} className="text-center">Fluently</Title>
             <Title order={1} className="text-center">Login</Title>
             <Space h="xl" />
             <Box mx="auto">
-                <form onSubmit={form.onSubmit((values) => console.log(values))}>
-                    <TextInput
-                        size="md"
-                        label="Email"
-                        placeholder="your@email.com"
-                        icon={<At size="1rem" />}
-                        {...form.getInputProps('email')}
-                    />
+                <form onSubmit={form.onSubmit(async (values) => {
+                    console.log(values)
+                    if (await actions.logIn(values) == "error") {
+                        setLoginFailed(true)
+                    }
+                })}>
+                    <TextInput size="md" label="Email" placeholder="your@email.com" icon={<At size="1rem" />} {...form.getInputProps('email')} />
                     <Space h="sm" />
-                    <PasswordInput
-                        size="md"
-                        placeholder="Password"
-                        label="Password"
-                        icon={<Lock size="1rem" />}
-                        {...form.getInputProps('password')}
-                    />
+                    <PasswordInput size="md" placeholder="Password" label="Password" icon={<Lock size="1rem" />} {...form.getInputProps('password')} />
                     <Group position="right" mt="md">
                         <Button type="submit">Login</Button>
                     </Group>
@@ -62,6 +70,11 @@ export const Login = (props) => {
                 <Button variant="outline">Login with Google</Button>
                 <Button onClick={() => props.setShow(true)} variant="outline">Register a New Account</Button>
             </Stack>
+
+            {loginFailed ?
+                <Notification onClick={() => setLoginFailed(false)} icon={<X size="1.1rem" />} color="red">
+                    Bad Credentials!
+                </Notification> : null}
         </>
     );
 };

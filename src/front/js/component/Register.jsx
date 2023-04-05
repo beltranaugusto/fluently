@@ -3,11 +3,11 @@ import { Context } from "../store/appContext";
 
 // Mantine Components and Icons import.
 import { useForm } from '@mantine/form';
-import { Lock, At, ArrowBack, User, Location } from 'tabler-icons-react';
+import { Lock, At, ArrowBack, User, Location, Check, X } from 'tabler-icons-react';
 import {
     Button, Group, Box, TextInput, PasswordInput, Title,
     Space, Divider, MultiSelect, ActionIcon, Stepper, Center,
-    Select, Checkbox, Text
+    Select, Checkbox, Text, Flex
 }
     from '@mantine/core';
 
@@ -17,7 +17,9 @@ export const Register = (props) => {
     // 'active' is the state that controls the steps of the register form. It also updates the Stepper component with the correspondent step.
     const [active, setActive] = useState(0);
     const nextStep = () => setActive((current) => (current < 3 ? current + 1 : current));
-    const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current));
+
+    // State for checking if the email if available.
+    const [emailAvailable, setEmailAvailable] = useState(true);
 
     // 'formOne' is the basic information form. Email, Name and Password are here.
     const formOne = useForm({
@@ -57,23 +59,45 @@ export const Register = (props) => {
     // 'formThree' is the additional information form. Is a School? is here.
     const formThree = useForm({
         initialValues: {
-            school: '',
+            school: false,
         },
 
     },
     );
 
+    //  Function that attemps to sign up with the data from the forms in each step.
+    const signUp = async () => {
+        actions.signUp({ ...formOne.values, ...formTwo.values, ...formThree.values })
+        nextStep()
+    }
+
     // 'continueForm' is a handler that checks if the form is valid before changing to the next step.
-    const continueForm = (formValues) => {
+    const continueForm = async (formValues) => {
         if (formValues.isValid()) {
-            nextStep()
+
+            // Checking if the email is available.
+            if (active == 0) {
+                if (await actions.checkEmail(formOne.values["email"]) == "error") {
+                    setEmailAvailable(false)
+                } else {
+                    nextStep()
+                }
+            }
+            // If at last step, attemp to signup.
+            else if (active == 2) {
+                console.log("Sign up attemp")
+                signUp()
+            } else {
+                nextStep()
+            }
+
         }
     }
 
 
     return (
         <>
-            <Title order={3} className="text-center">DuoLingo</Title>
+            <Title order={3} className="text-center">Fluently</Title>
             <Title order={1} className="text-center">Register</Title>
 
             <Space h="xl" />
@@ -102,6 +126,7 @@ export const Register = (props) => {
                             icon={<At size="1rem" />}
                             {...formOne.getInputProps('email')}
                         />
+                        {emailAvailable ? null : <Text fz="sm" c="red">Email unavailable.</Text>}
                         <Space h="sm" />
                         <PasswordInput
                             size="md"
@@ -201,9 +226,21 @@ export const Register = (props) => {
 
                         <Group position="apart" mt="md">
                             <ActionIcon onClick={() => props.setShow(false)} size="lg" variant="outline"><ArrowBack size="1rem" /></ActionIcon>
-                            <Button type="submit">Continue</Button>
+                            <Button type="submit">Finish</Button>
                         </Group>
                     </form>
+                </Box>
+                : null}
+
+            {active == 3 ?
+                <Box mx="auto">
+                    <Flex direction={{ base: 'column' }}>
+                        <Group position="apart" mt="md">
+                            <Title order={5} className="text-center">Signed Up Sucessfully</Title>
+                            <ActionIcon color="green" size="xl" radius="xl" variant="outline"><Check size="2rem" /></ActionIcon>
+                        </Group>
+                        <Button mt="lg" onClick={() => props.setShow(false)} variant="gradient" gradient={{ from: 'indigo', to: 'cyan' }}>Go back and Log In</Button>
+                    </Flex>
                 </Box>
                 : null}
 
@@ -213,7 +250,7 @@ export const Register = (props) => {
             <Space h="lg" />
 
             <Center mx="auto">
-                <Stepper size="xs" breakpoint="sm" active={active} onStepClick={setActive}>
+                <Stepper size="xs" breakpoint="sm" active={active}>
                     <Stepper.Step label="First step" description="Basic Information">
                     </Stepper.Step>
                     <Stepper.Step label="Second step" description="Language Preferences">

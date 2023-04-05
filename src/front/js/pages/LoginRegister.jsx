@@ -1,10 +1,9 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
-import { useForm } from '@mantine/form';
 import { Login } from "../component/Login.jsx";
 import { Register } from "../component/Register.jsx";
 
-import { Center, Flex } from '@mantine/core';
+import { Center, Flex, Box } from '@mantine/core';
 
 export const LoginRegister = () => {
     const { store, actions } = useContext(Context);
@@ -17,7 +16,10 @@ export const LoginRegister = () => {
         <Center mx="auto">
             <Flex direction={{ base: 'column' }}>
 
-                {show ? <Register setShow={setShow} /> : <Login setShow={setShow} />}
+                {/* Declaring a min height and a min width for the login a register section */}
+                <Box sx={() => ({ minHeight: '720px', minWidth: '280px', maxWidth: '280px' })}>
+                    {show ? <Register setShow={setShow} /> : <Login setShow={setShow} />}
+                </Box>
 
             </Flex>
         </Center>
