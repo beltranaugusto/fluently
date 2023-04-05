@@ -1,67 +1,65 @@
-# WebApp boilerplate with React JS and Flask API
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+    <img src="https://raw.githubusercontent.com/othneildrew/Best-README-Template/master/images/logo.png" alt="Logo" width="80" height="80">
 
-Build web applications using React.js for the front end and python/flask for your backend API.
+  <h3 align="center">Fluently - WIP</h3>
 
-- Documentation can be found here: https://start.4geeksacademy.com/starters/react-flask
-- Here is a video on [how to use this template](https://www.loom.com/share/f37c6838b3f1496c95111e515e83dd9b)
-- Integrated with Pipenv for package managing.
-- Fast deloyment to heroku [in just a few steps here](https://start.4geeksacademy.com/backend/deploy-heroku-posgres).
-- Use of .env file.
-- SQLAlchemy integration for database abstraction.
+  <p align="center">
+    A webapp about <strong>connecting</strong> and <strong>meeting people</strong> to <strong>practice a new language!</strong>
+  </p>
+</div>
 
-### Manual Installation:
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ol>
+</details>
 
-It is recomended to install the backend first, make sure you have Python 3.8, Pipenv and a database engine (Posgress recomended)
 
-1. Install the python packages: `$ pipenv install`
-2. Create a .env file based on the .env.example: `$ cp .env.example .env`
-3. Install your database engine and create your database, depending on your database you have to create a DATABASE_URL variable with one of the possible values, make sure you replace the valudes with your database information:
 
-| Engine    | DATABASE_URL                                        |
-| --------- | --------------------------------------------------- |
-| SQLite    | sqlite:////test.db                                  |
-| MySQL     | mysql://username:password@localhost:port/example    |
-| Postgress | postgres://username:password@localhost:5432/example |
+<!-- ABOUT THE PROJECT -->
+## About The Project
 
-4. Migrate the migrations: `$ pipenv run migrate` (skip if you have not made changes to the models on the `./src/api/models.py`)
-5. Run the migrations: `$ pipenv run upgrade`
-6. Run the application: `$ pipenv run start`
+Fluently is a web application that connects people who want to practice a language they are learning locally. Users can sign up on the app, search for other users who speak the language they want to practice and are willing to meet up in person to practice together. The app also provides an instant messaging feature so users can communicate and plan the details of their meetup. With Fluently, users can improve their language skills and meet other people interested in learning and practicing languages.
 
-### Backend Populate Table Users
+### Built With
 
-To insert test users in the database execute the following command:
+* React
+* Flask
+* Mantine
+* PostgreSQL
 
-```sh
-$ flask insert-test-users 5
-```
+<!-- ROADMAP -->
+## Roadmap
 
-And you will see the following message:
+- [x] WIP
 
-```
-  Creating test users
-  test_user1@test.com created.
-  test_user2@test.com created.
-  test_user3@test.com created.
-  test_user4@test.com created.
-  test_user5@test.com created.
-  Users created successfully!
-```
+<!-- CONTACT -->
+## Contact
 
-To update with all yours tables you can edit the file app.py and go to the line 80 to insert the code to populate others tables
+Beltrán Liscano - beltranliscano@gmail.com
 
-### Front-End Manual Installation:
+Linkedin: [linkedin.com/in/beltran-liscano/](https://www.linkedin.com/in/beltran-liscano)
 
--   Make sure you are using node version 14+ and that you have already successfully installed and runned the backend.
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-1. Install the packages: `$ npm install`
-2. Start coding! start the webpack dev server `$ npm run start`
 
-## Publish your website!
 
-This boilerplate it's 100% read to deploy with Render.com and Heroku in a matter of minutes. Please read the [official documentation about it](https://start.4geeksacademy.com/deploy).
 
-### Contributors
 
-This template was built as part of the [Full Stack Developer course](https://4geeksacademy.com/us/coding-bootcamps/part-time-full-stack-developer) at [4Geeks Academy Coding Bootcamp](https://4geeksacademy.com/us/coding-bootcamp) by [Alejandro Sanchez](https://twitter.com/alesanchezr) and [many other contributors](https://github.com/4GeeksAcademy/react-flask-hello/graphs/contributors).
-
-You can find other templates and resources like this at the [school github page](https://github.com/4geeksacademy/).
+[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[React-url]: https://reactjs.org/
+[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
+[Bootstrap-url]: https://getbootstrap.com
+[Flask]: https://img.shields.io/badge/Flask-000333?style=for-the-badge&logo=Flask¿&logoColor=white
+[Flask-url]: https://flask.palletsprojects.com
