@@ -1,36 +1,39 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Card, Group, Text, Button, Badge, Image } from '@mantine/core';
+import { Card, Group, Text, Button, Badge, Image, ActionIcon, Space } from '@mantine/core';
+import { Container, DeviceGamepad } from 'tabler-icons-react';
+
 
 
 export const MyCard = () => {
-	return (
-		<>
-            <Card shadow="sm" padding="lg" radius="md" withBorder>
-                <Card.Section>
-                    <Image
-                    src="https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
-                    height={160}
-                    alt="Norway"
-                    />
-                </Card.Section>
+    return (
+        <>
+            <Card shadow="sm" padding="lg" radius="md" mb="sm" withBorder>
 
-                <Group position="apart" mt="md" mb="xs">
-                    <Text weight={500}>Norway Fjord Adventures</Text>
-                    <Badge color="pink" variant="light">
-                    On Sale
-                    </Badge>
+
+                <Group position="apart" mb="xs">
+                    <Text weight={500} w="180px">Encuentro para hablar de videojuegos</Text>
+                    <ActionIcon size="xl">
+                        <DeviceGamepad size="2em" />
+                    </ActionIcon>
                 </Group>
 
-                <Text size="sm" color="dimmed">
-                    With Fjord Tours you can explore more of the magical fjord landscapes with tours and
-                    activities on and around the fjords of Norway
+
+                <Text w="180px" size="xs" color="dimmed">
+                    <Badge color="green" size="sm" radius="xs" variant="dot">Miguel Otero</Badge>
+                </Text>
+
+                <Text w="250px" size="xs" color="dimmed">
+                    <Badge color="gray" size="sm" radius="xs" variant="dot">5Km</Badge>  <Badge color="gray" size="sm" radius="xs" variant="dot">Plaza La Candelaria</Badge>
+                </Text>
+                <Text w="180px" size="xs" color="dimmed">
+                    <Badge color="gray" size="sm" radius="xs" variant="dot">16/04/23</Badge>
                 </Text>
 
                 <Button variant="light" color="blue" fullWidth mt="md" radius="md">
-                    Book classic tour now
+                    See More
                 </Button>
             </Card>
         </>
-	);
+    );
 };
