@@ -16,7 +16,7 @@ const Layout = () => {
 
     return (
         <>
-            <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme: 'dark' }}>
+            <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme: 'light' }}>
             <BrowserRouter basename={basename}>
                 
                     <Routes>
