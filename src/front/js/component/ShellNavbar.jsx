@@ -4,7 +4,7 @@ import { Button, Container, Avatar, Flex, Group, Title } from '@mantine/core';
 import { Users, Bell, User } from 'tabler-icons-react';
 
 
-export const MyNavbar = () => {
+export const ShellNavbar = () => {
 
     const { store, actions } = useContext(Context);
 
