@@ -91,5 +91,5 @@ def checkemail(email=None):
             else:
                 return jsonify({'success': 'Email available'}), 200
                 
-            
+
                 
