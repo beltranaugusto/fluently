@@ -53,12 +53,19 @@ export const Login = (props) => {
                         setLoginFailed(true)
                     }
                 })}>
+
+                    {/*Email Input*/}
                     <TextInput size="md" label="Email" placeholder="your@email.com" icon={<At size="1rem" />} {...form.getInputProps('email')} />
                     <Space h="sm" />
+
+                    {/*Password Input*/}
                     <PasswordInput size="md" placeholder="Password" label="Password" icon={<Lock size="1rem" />} {...form.getInputProps('password')} />
+
+                    {/*Login Button*/}
                     <Group position="right" mt="md">
                         <Button type="submit">Login</Button>
                     </Group>
+
                 </form>
             </Box>
 
@@ -66,11 +73,14 @@ export const Login = (props) => {
             <Divider my="sm" />
             <Space h="lg" />
 
+            {/*Register or Login with Google Buttons*/}
             <Stack h={300} >
                 <Button variant="outline">Login with Google</Button>
                 <Button onClick={() => props.setShow(true)} variant="outline">Register a New Account</Button>
             </Stack>
 
+
+            {/*Login Failed Message*/}
             {loginFailed ?
                 <Notification onClick={() => setLoginFailed(false)} icon={<X size="1.1rem" />} color="red">
                     Bad Credentials!

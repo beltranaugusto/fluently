@@ -102,12 +102,15 @@ export const Register = (props) => {
 
             <Space h="xl" />
 
+            {/*First Step*/}
             {active == 0 ?
                 <Box mx="auto">
                     <form onSubmit={formOne.onSubmit((values) => {
                         console.log(values)
                         continueForm(formOne)
                     })}>
+
+                        {/*Name Input*/}
                         <TextInput
                             size="md"
                             label="Name"
@@ -118,6 +121,8 @@ export const Register = (props) => {
                             {...formOne.getInputProps('name')}
                         />
                         <Space h="sm" />
+
+                        {/*Email Input*/}
                         <TextInput
                             size="md"
                             label="Email"
@@ -128,6 +133,8 @@ export const Register = (props) => {
                         />
                         {emailAvailable ? null : <Text fz="sm" c="red">Email unavailable.</Text>}
                         <Space h="sm" />
+
+                        {/*Password Input*/}
                         <PasswordInput
                             size="md"
                             placeholder="Password"
@@ -138,12 +145,16 @@ export const Register = (props) => {
                             {...formOne.getInputProps('password')}
                         />
                         <Space h="sm" />
+
+                        {/*Confirm Password Input*/}
                         <PasswordInput
                             size="md"
                             placeholder="Confirm Password"
                             icon={<Lock size="1rem" />}
                             {...formOne.getInputProps('confirmPassword')}
                         />
+
+                        {/*Continue Input*/}
                         <Group position="apart" mt="md">
                             <ActionIcon onClick={() => props.setShow(false)} size="lg" variant="outline"><ArrowBack size="1rem" /></ActionIcon>
                             <Button type="submit">Continue</Button>
@@ -152,12 +163,15 @@ export const Register = (props) => {
                 </Box>
                 : null}
 
+            {/*Second Step*/}
             {active == 1 ?
                 <Box mx="auto">
                     <form onSubmit={formTwo.onSubmit((values) => {
                         console.log(values);
                         continueForm(formTwo);
                     })}>
+
+                        {/*Languages Input*/}
                         <MultiSelect data={[
                             { value: 'English', label: 'English' },
                             { value: 'Spanish', label: 'Spanish' },
@@ -170,6 +184,8 @@ export const Register = (props) => {
                             {...formTwo.getInputProps('languages')}
                         />
                         <Space h="sm" />
+
+                        {/*Country Input*/}
                         <Select data={[
                             { value: 'United States', label: 'United States' },
                             { value: 'Venezuela', label: 'Venezuela' },
@@ -181,6 +197,8 @@ export const Register = (props) => {
                             {...formTwo.getInputProps('country')}
                         />
                         <Space h="sm" />
+
+                        {/*City Input*/}
                         <TextInput
                             size="sm"
                             label="Write the name of your city of residence"
@@ -190,6 +208,7 @@ export const Register = (props) => {
                             {...formTwo.getInputProps('city')}
                         />
 
+                        {/*Continue Button*/}
                         <Group position="apart" mt="md">
                             <ActionIcon onClick={() => props.setShow(false)} size="lg" variant="outline"><ArrowBack size="1rem" /></ActionIcon>
                             <Button type="submit">Continue</Button>
@@ -198,12 +217,15 @@ export const Register = (props) => {
                 </Box>
                 : null}
 
+            {/*Step Three*/}
             {active == 2 ?
                 <Box mx="auto">
                     <form onSubmit={formThree.onSubmit((values) => {
                         console.log(values);
                         continueForm(formThree);
                     })}>
+
+                        {/*Info Message*/}
                         <Box sx={(theme) => ({
                             width: '240px',
                             textAlign: 'center'
@@ -216,14 +238,15 @@ export const Register = (props) => {
 
                         <Space h="sm" />
 
+                        {/*Are you a School? Input*/}
                         <Center>
                             <Checkbox
-                                label="Are you an School?"
+                                label="Are you a School?"
                             />
                         </Center>
                         <Space h="sm" />
 
-
+                        {/*Continue Button*/}
                         <Group position="apart" mt="md">
                             <ActionIcon onClick={() => props.setShow(false)} size="lg" variant="outline"><ArrowBack size="1rem" /></ActionIcon>
                             <Button type="submit">Finish</Button>
@@ -232,13 +255,18 @@ export const Register = (props) => {
                 </Box>
                 : null}
 
+            {/*Last Step*/}
             {active == 3 ?
                 <Box mx="auto">
                     <Flex direction={{ base: 'column' }}>
+
+                        {/*Success Message*/}
                         <Group position="apart" mt="md">
                             <Title order={5} className="text-center">Signed Up Sucessfully</Title>
                             <ActionIcon color="green" size="xl" radius="xl" variant="outline"><Check size="2rem" /></ActionIcon>
                         </Group>
+
+                        {/*Go Back Button*/}
                         <Button mt="lg" onClick={() => props.setShow(false)} variant="gradient" gradient={{ from: 'indigo', to: 'cyan' }}>Go back and Log In</Button>
                     </Flex>
                 </Box>
@@ -249,6 +277,7 @@ export const Register = (props) => {
             <Divider my="sm" />
             <Space h="lg" />
 
+            {/*Stepper*/}
             <Center mx="auto">
                 <Stepper size="xs" breakpoint="sm" active={active}>
                     <Stepper.Step label="First step" description="Basic Information">

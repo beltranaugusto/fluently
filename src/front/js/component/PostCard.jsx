@@ -11,6 +11,7 @@ export const PostCard = () => {
         <>
             <Card shadow="sm" padding="lg" radius="md" mb="sm" withBorder>
 
+                {/*Title and Icon*/}
                 <Group position="apart" mb="xs">
                     <Text weight={500} w="180px">Encuentro para hablar de videojuegos</Text>
                     <ActionIcon size="xl">
@@ -18,24 +19,23 @@ export const PostCard = () => {
                     </ActionIcon>
                 </Group>
 
+                {/*Info and Tags Group*/}
                 <Group position="apart" mb="xs">
-                    <Stack maw={"300px"} spacing={"0px"}>
 
+                    {/*Info about the post*/}
+                    <Stack maw={"300px"} spacing={"0px"}>
                         <Text size="sm" color="dimmed" weight={500}>
                             Miguel Otero
                         </Text>
-
                         <Text size="xs" color="dimmed" weight={500}>
                             <Text size="sm" span>5km Away</Text> - Plaza La Candelaria
                         </Text>
-
                         <Text size="sm" color="dimmed" weight={400}>
                             16/04/23
                         </Text>
-
-
-
                     </Stack>
+
+                    {/*Tags*/}
                     <Group position="right" maw={"100px"}>
                         <div className="d-flex flex-column">
                             <Text size="xs" color="dimmed" align="right">
@@ -53,8 +53,7 @@ export const PostCard = () => {
                     </Group>
                 </Group>
 
-
-
+                {/*See More Button*/}
                 <Button onClick={() => { navigate("/post") }} variant="light" color="blue" fullWidth mt="md" radius="md">
                     See More
                 </Button>
