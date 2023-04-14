@@ -8,8 +8,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 		actions: {
 
 			// Login action.
+
+			//${process.env.BACKEND_URL}/login
 			logIn: async (formData) => {
-				return fetch("http://127.0.0.1:3001/api/login", {
+				return fetch(`${process.env.BACKEND_URL}/login`, {
 					method: "POST",
 					body: JSON.stringify(formData),
 					headers: {
@@ -39,7 +41,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			
 			// Sign Up Action
 			signUp: async (formData) => {
-				return fetch("http://127.0.0.1:3001/api/sign_up", {
+				return fetch(`${process.env.BACKEND_URL}/sign_up`, {
 					method: "POST",
 					body: JSON.stringify(formData),
 					headers: {
@@ -61,7 +63,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			// Check Email Action
 			checkEmail: async (email) => {
-				return fetch("http://127.0.0.1:3001/api/checkemail/" + email, {
+				return fetch(`${process.env.BACKEND_URL}/checkemail/` + email, {
 					method: "GET",
 					headers: {
 						"Content-Type": "application/json",
