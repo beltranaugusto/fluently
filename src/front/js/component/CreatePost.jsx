@@ -1,8 +1,7 @@
 import React from "react";
 import { DateInput, TimeInput } from '@mantine/dates';
-
-import { Card, Group, Button, ActionIcon, Box, Title, MultiSelect, Space, Select, TextInput, Textarea, Grid, Paper } from '@mantine/core';
-import { ArrowBack, Location, Clock, Calendar } from 'tabler-icons-react';
+import { Card, Group, Button, Box, Title, MultiSelect, Space, TextInput, Textarea, Grid } from '@mantine/core';
+import { Location, Clock, Calendar } from 'tabler-icons-react';
 
 
 
@@ -70,7 +69,7 @@ export const CreatePost = () => {
                         <Space h="sm" />
 
                         {/*Date and Hour Input*/}
-                        <Grid align="end">
+                        <Grid align="apart">
                             <Grid.Col span={6}>
                                 <DateInput
                                     valueFormat="YYYY MMM DD"
@@ -79,7 +78,7 @@ export const CreatePost = () => {
                                     placeholder="Date"
                                     withAsterisk
                                     maw={400}
-                                    mx="auto"
+
                                     icon={<Calendar size="1rem" />}
                                 />
                             </Grid.Col>
@@ -88,7 +87,7 @@ export const CreatePost = () => {
                                     description="Write the hour. (PM/AM)"
                                     label="Hour"
                                     withAsterisk
-                                    icon={<Clock size="1rem" />} maw={400} mx="auto" />
+                                    icon={<Clock size="1rem" />} maw={400} ml="auto" />
                             </Grid.Col>
                         </Grid>
 

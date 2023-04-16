@@ -1,9 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from 'react-router-dom';
-
-
-// Mantine Components and Icons import.
 import { useForm } from '@mantine/form';
 import { Lock, At, X } from 'tabler-icons-react';
 import { Button, Group, Box, TextInput, PasswordInput, Title, Space, Divider, Stack, Notification } from '@mantine/core';

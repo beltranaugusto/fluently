@@ -14,6 +14,7 @@ export const Shell = () => {
 	const { store, actions } = useContext(Context);
 	const navigate = useNavigate();
 
+
 	// Redirection to the login page if the user is not logged.
 	useEffect(() => {
 		if (store.token == null) {
@@ -38,11 +39,13 @@ export const Shell = () => {
 				</Footer>}
 			>
 				{/*Routes nested inside the shell*/}
-				<Routes>
-					<Route exact path="/home" element={<Home />} />
-					<Route exact path="/post" element={<Post />} />
-					<Route exact path="/createpost" element={<CreatePost />} />
-				</Routes>
+				<div className="max-width">
+					<Routes>
+						<Route exact path="/home" element={<Home />} />
+						<Route exact path="/post/:id" element={<Post />} />
+						<Route exact path="/createpost" element={<CreatePost />} />
+					</Routes>
+				</div>
 			</AppShell>
 		</>
 	);

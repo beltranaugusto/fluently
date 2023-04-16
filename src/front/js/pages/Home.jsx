@@ -1,13 +1,21 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
-
 import { PostCard } from "../component/PostCard.jsx";
-
-import { Grid, Container, Card, TextInput, Button, Group, Space } from '@mantine/core';
+import { Grid, Card, TextInput, Button, Group, Space } from '@mantine/core';
 import { Search } from 'tabler-icons-react';
 
 export const Home = () => {
     const { store, actions } = useContext(Context);
+    const [posts, setPosts] = useState([])
+
+    //
+    useEffect(() => {
+        postsList()
+    }, []);
+
+    const postsList = async () => {
+        setPosts(await actions.getPosts())
+    }
 
     return (
         <>
@@ -24,9 +32,11 @@ export const Home = () => {
             </Card>
             <Grid>
                 <Grid.Col span={12}>
-                    <PostCard />
-                    <PostCard />
-                    <PostCard />
+                    {
+                        posts?.map((item) => {
+                            return <PostCard key={item.id} data={item} />;
+                        })
+                    }
                 </Grid.Col>
             </Grid>
         </>

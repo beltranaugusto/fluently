@@ -2,14 +2,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			token: localStorage.getItem("token") || null,
-      		user_id: localStorage.getItem("user_id") || null,
-      		email: localStorage.getItem("email") || null,
+      		user_data: JSON.parse(localStorage.getItem("user_data")) || null,
 		},
 		actions: {
-
 			// Login action.
-
-			//${process.env.BACKEND_URL}/login
 			logIn: async (formData) => {
 				return fetch(`${process.env.BACKEND_URL}/login`, {
 					method: "POST",
@@ -30,10 +26,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 						console.log("good")
 						localStorage.setItem("token", data.token);
 						setStore({ token: data.token });
-						localStorage.setItem("user_id", data.user_id);
-						setStore({ user_id: data.user_id });
-						localStorage.setItem("email", data.email);
-						setStore({ email: data.email });
+
+						// Store the user_data
+						localStorage.setItem("user_data", JSON.stringify(data.user_data));
+						setStore({ user_data: data.user_data });
 						return "bien"
 					}
 				})
@@ -81,13 +77,54 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				})
 			},
+
+			// Get Posts Action
+			getPosts: async () => {
+				return fetch(`${process.env.BACKEND_URL}/getposts/`, {
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+				})
+				.then(async (response) => {
+					const data = await response.json();
+					console.log(data)
+					if (data.error){
+						console.log("there has been an error")
+						return "error"
+					} else {
+						console.log("here are your posts")
+						return data
+					}
+				})
+			},
+
+			// Get A Post Action
+			getPost: async (id) => {
+				return fetch(`${process.env.BACKEND_URL}/getpost/` + id, {
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+				})
+				.then(async (response) => {
+					const data = await response.json();
+					console.log(data)
+					if (data.error){
+						console.log("there has been an error")
+						return "error"
+					} else {
+						console.log("here are your posts")
+						return data
+					}
+				})
+			},
 			
 			// Logout Action
 			logout: () => {
 				localStorage.removeItem("token");
-				localStorage.removeItem("user_id");
-				localStorage.removeItem("email");
-				setStore({ token: null, user_id: null, email: null });
+				localStorage.removeItem("user_data");
+				setStore({ token: null, user_data: null });
 			  },
 		}
 	}
