@@ -1,32 +1,52 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Card, Group, Text, Button, ActionIcon, Box, Grid, Avatar, ScrollArea, Image, Badge } from '@mantine/core';
+import React, { useEffect, useState, useContext } from "react";
+import { Context } from "../store/appContext";
+import { useParams } from "react-router-dom";
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import { Card, Group, Text, Button, ActionIcon, Box, Grid, Avatar, ScrollArea, Badge } from '@mantine/core';
 import { DeviceGamepad, Star } from 'tabler-icons-react';
 
 
 
 export const Post = () => {
+
+    const { store, actions } = useContext(Context);
+    const { id } = useParams();
+    const [post, setPost] = useState()
+
+    useEffect(() => {
+        getPost()
+    }, []);
+
+    const getPost = async () => {
+        setPost(await actions.getPost(id))
+    }
+
     return (
         <>
             <Card shadow="xl" padding="lg" radius="md" mb="sm" withBorder>
 
                 {/*Title*/}
-                <Box sx={(theme) => ({ textAlign: 'left', marginBottom: theme.spacing.sm, padding: theme.spacing.md, borderRadius: theme.radius.sm, })}>
+                <Box sx={(theme) => ({ textAlign: 'left', marginBottom: theme.spacing.xs, padding: theme.spacing.md, borderRadius: theme.radius.sm, })}>
                     <Group position="apart">
-                        <Text weight={500} w="180px">Encuentro para hablar de videojuegos</Text>
+                        <Text weight={500} w="180px">{post?.title}</Text>
                         <ActionIcon size="xl" color="blue">
                             <DeviceGamepad size="5em" />
                         </ActionIcon>
                     </Group>
                     <Text mt="xs" fs={"italic"} size="xs" color="dimmed" weight={400}>
-                        Starts on: 16/04/23
+                        Starts on:
+                    </Text>
+                    <Text fs={"italic"} size="xs" color="dimmed" weight={400}>
+                        {post?.date}
                     </Text>
                 </Box>
 
                 <Text align="center" mb={"sm"}>
-                    <Badge m={"3px"} size="lg" radius="sm">Online</Badge>
-                    <Badge m={"3px"} size="lg" radius="sm" color="yellow">Casual</Badge>
-                    <Badge m={"3px"} size="lg" radius="sm" color="lime">Beginner</Badge>
+                    {
+                        post?.tags?.map((item) => {
+                            return <Badge m={"3px"} size="lg" radius="sm" color={item[1]}>{item[0]}</Badge>
+                        })
+                    }
                 </Text>
 
 
@@ -35,18 +55,7 @@ export const Post = () => {
                 <Box className="border" sx={(theme) => ({ backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0], textAlign: 'left', marginBottom: theme.spacing.md, padding: theme.spacing.lg, borderRadius: theme.radius.sm })}>
 
                     <Text mt={"sm"} size="xs" color="dimmed">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Fusce at nulla diam. Phasellus non sapien vel mauris ultricies finibus.
-                        Mauris ut nisl in mauris mollis fermentum ac bibendum dolor. Quisque nec dolor gravida, viverra est vitae, suscipit velit.
-                        Cras porttitor fringilla mattis. In arcu felis, elementum id porttitor id, sodales eu tortor.
-                        <ul>
-                            <li>
-                                Nam erat sapien, porta a quam vitae, ullamcorper commodo mi. In aliquet aliquet nulla eget commodo.
-                            </li>
-                            <li>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis non semper libero.
-                            </li>
-                        </ul>
+                        {post?.description}
                     </Text>
                 </Box>
 
@@ -60,9 +69,9 @@ export const Post = () => {
 
                             <Group position="apart" align="start">
                                 <div>
-                                    <Text size="md" weight={500}>Raamses Garcia</Text>
-                                    <Text size="xs" weight={500}>Ingles, Español, Frances</Text>
-                                    <Text mt={"sm"} size="xs" weight={500}>Venezuela, Caracas</Text>
+                                    <Text size="md" transform="capitalize" weight={500}>{post?.user_name}</Text>
+                                    <Text size="xs" weight={500}>{post?.user_languages.map((item) => { return (item + " ") })}</Text>
+                                    <Text mt={"sm"} size="xs" weight={500}>{post?.user_country}, {post?.user_city}</Text>
                                 </div>
                                 <div className="d-flex">
                                     <Text mt={"5px"} mb={"auto"} mr={"1px"} size="xs">4.78</Text>
@@ -77,8 +86,26 @@ export const Post = () => {
                 </Grid>
 
                 {/*Map with Location*/}
+
                 <Box className="border" sx={(theme) => ({ minHeight: "230px", textAlign: 'left', marginTop: theme.spacing.md, borderRadius: theme.radius.sm, cursor: 'pointer', })}>
-                    <Image height={"230px"} width={"100%"} src="https://www.tintasytonercompatibles.es/blog/wp-content/uploads/2022/04/Como-imprimir-mapa-Google-Maps-grande.jpg" alt="Random image" />
+                    {post?.location ?
+                        <MapContainer className="map" center={[post.location[0], post.location[1]]} zoom={13} scrollWheelZoom={false}>
+                            <TileLayer
+                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            />
+                            <Marker position={[post.location[0], post.location[1]]}>
+                                <Popup>
+                                    Aqui será el evento.
+                                </Popup>
+                            </Marker>
+                            <Marker position={[store.user_data.location[0], store.user_data.location[1]]}>
+                                <Popup>
+                                    Aquí estás tú.
+                                </Popup>
+                            </Marker>
+                        </MapContainer>
+                        : null}
                 </Box>
 
                 {/*I Will Go Button*/}
@@ -89,39 +116,20 @@ export const Post = () => {
                 {/*Attendees*/}
                 <Box className="border" sx={(theme) => ({ marginTop: theme.spacing.md, padding: theme.spacing.md, minHeight: "70px", backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0], borderRadius: theme.radius.sm, })}>
                     <Text size="sm" color="dimmed" weight={400}>
-                        <Text fw={500} span>7</Text> Attendees
+                        <Text fw={500} span>{post?.attendees.length}</Text> Attendees
                     </Text>
-                    <ScrollArea borderRadius="xs">
+                    <ScrollArea>
                         <Box sx={(theme) => ({ display: "flex" })}>
-                            <Box sx={(theme) => ({ minWidth: "40px", backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0], textAlign: 'center', borderRadius: theme.radius.sm, cursor: 'pointer', margin: theme.spacing.xs, })}>
-                                <Avatar className="mx-auto" size="lg" radius="sm" />
-                                <Text size="xs" color="dimmed">Beltran</Text>
-                                <Text size="xs" mt={"-3px"} color="dimmed">Liscano</Text>
-                            </Box>
-                            <Box sx={(theme) => ({ minWidth: "40px", backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0], textAlign: 'center', borderRadius: theme.radius.sm, cursor: 'pointer', margin: theme.spacing.xs })}>
-                                <Avatar className="mx-auto" size="lg" radius="sm" />
-                                <Text size="xs" color="dimmed">Maria</Text>
-                                <Text size="xs" mt={"-3px"} color="dimmed">Antonieta</Text>
-                            </Box>
-                            <Box sx={(theme) => ({ minWidth: "40px", backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0], textAlign: 'center', borderRadius: theme.radius.sm, cursor: 'pointer', margin: theme.spacing.xs })}>
-                                <Avatar className="mx-auto" size="lg" radius="sm" />
-                                <Text size="xs" color="dimmed">Lousiux</Text>
-                            </Box>
-                            <Box sx={(theme) => ({ minWidth: "40px", backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0], textAlign: 'center', borderRadius: theme.radius.sm, cursor: 'pointer', margin: theme.spacing.xs })}>
-                                <Avatar className="mx-auto" size="lg" radius="sm" />
-                                <Text size="xs" color="dimmed">Miriam</Text>
-                                <Text size="xs" mt={"-3px"} color="dimmed">Ramirez</Text>
-                            </Box>
-                            <Box sx={(theme) => ({ minWidth: "40px", backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0], textAlign: 'center', borderRadius: theme.radius.sm, cursor: 'pointer', margin: theme.spacing.xs })}>
-                                <Avatar className="mx-auto" size="lg" radius="sm" />
-                                <Text size="xs" color="dimmed">Carlito</Text>
-                                <Text size="xs" mt={"-3px"} color="dimmed">Useche</Text>
-                            </Box>
-                            <Box sx={(theme) => ({ minWidth: "40px", backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0], textAlign: 'center', borderRadius: theme.radius.sm, cursor: 'pointer', margin: theme.spacing.xs })}>
-                                <Avatar className="mx-auto" size="lg" radius="sm" />
-                                <Text size="xs" color="dimmed">Lord</Text>
-                                <Text size="xs" mt={"-3px"} color="dimmed">Valdomero</Text>
-                            </Box>
+                            {post?.attendees.map((item) => {
+                                return (
+                                    <Box sx={(theme) => ({ minWidth: "40px", backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0], textAlign: 'center', borderRadius: theme.radius.sm, cursor: 'pointer', margin: theme.spacing.xs, })}>
+                                        <Avatar className="mx-auto" size="lg" radius="sm" />
+                                        <Text size="xs" color="dimmed" transform="capitalize">{item[0]}</Text>
+                                        {/* Arreglar Apellido*/}
+                                        {/* <Text size="xs" mt={"-3px"} color="dimmed">Liscano</Text> */}
+                                    </Box>
+                                )
+                            })}
                         </Box>
                     </ScrollArea>
                 </Box>

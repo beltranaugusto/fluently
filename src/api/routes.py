@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify, url_for, Blueprint
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
-from api.models import db, User, Country, Language
+from api.models import db, User, Country, Language, Tag, Post
 from api.utils import generate_sitemap, APIException
+from datetime import datetime
+
 
 api = Blueprint('api', __name__)
 
@@ -34,9 +36,20 @@ def login():
                 # Creation of Login Token.
                 if check_password(login.password, password):
                     access_token = create_access_token(identity=login.id)
-                    return jsonify({ 'token': access_token, 'user_id': login.id, "email": login.email }), 200
+                    return jsonify({ 'token': access_token, 'user_data':login.serialize() }), 200
                 else:
                     return jsonify({'error': 'Bad credentials'}), 400
+
+@api.route('/getuser/<int:id>', methods=['GET'])
+def get_user(id=None):
+    if request.method =='GET':
+        user = User.query.filter_by(id=id).first()
+
+        if user:
+            return jsonify(user.serialize()), 200
+        else:
+            return jsonify({"message": "User with the id provided doesn't exist"}), 404
+
 
 @api.route('/sign_up', methods=['POST'])
 def sign_up():
@@ -73,7 +86,8 @@ def sign_up():
             password_hash = generate_password_hash(password)
 
             # Database creation of User.
-            user = User(name=name, email=email, password=password_hash, languages=languages, country=country, city=city, is_school=False, is_active=True)
+            # Location is hardcoded for the moment. 
+            user = User(name=name, email=email, password=password_hash, languages=languages, country=country, city=city, is_school=False, is_active=True, location="10.489037 -66.93847")
             db.session.add(user)
             try:
                 db.session.commit()
@@ -92,4 +106,75 @@ def checkemail(email=None):
                 return jsonify({'success': 'Email available'}), 200
                 
 
-                
+@api.route('/createpost', methods=['POST'])
+def createpost():
+    if request.method =='POST':
+
+        body = request.json
+        tags = []
+
+        dateFormatted = []
+
+        # Retrieving the body data.
+        title = body.get('title', None)
+        description = body.get('description', None)
+        location = body.get('location', None)
+        tags_list = body.get('tags', None)
+        dateUnformatted = body.get('date', None)
+        user = body.get('user', None)
+
+
+        # I gotta simplify this code
+        x = dateUnformatted.split(" ")
+        date = x[0]
+        time = x[1]
+        date = date.split("/")
+        time = time.split(":")
+        dateFormatted = date + time
+        dateFormatted = datetime(int(dateFormatted[0]), int(dateFormatted[1]), int(dateFormatted[2]), int(dateFormatted[3]), int(dateFormatted[4]) )
+
+        print(title, description, location, tags_list, dateUnformatted)
+
+        # Checking if it is complete.
+        if (title == "") or (description == "") or (location == "") or (tags_list == []) or (dateUnformatted == ""):
+            return jsonify({'message': "Form incomplete."}), 400
+        else:
+            
+            # Getting the tags objects using the list of tags received. And checking if the tag doesn't exist.
+            for i in tags_list:
+                tag = Tag.query.filter_by(tag_name=i).first()
+                tags.append(tag)
+            if not tags:
+                return jsonify({"message": "A tag received is not supported."}), 400
+            
+            # Database creation of Post.
+            post = Post(title=title, description=description, location=location, tags=tags, date=dateFormatted, user=user)
+            db.session.add(post)
+            try:
+                db.session.commit()
+                return jsonify({"message": "Post created successfully"}), 201
+            except Exception as error:
+                print(error.args)
+                db.session.rollback()
+                return  jsonify({"message": f"Error: {error.args}", "error": "error"}), 500
+                    
+
+@api.route('/getposts', methods=['GET'])
+def getting_posts():
+    if request.method =='GET':
+        posts = Post.query.all()
+        posts_list = []
+        for post in posts:
+            posts_list.append(post.serialize())
+
+        return jsonify(posts_list), 200
+    
+@api.route('/getpost/<int:id>', methods=['GET'])
+def get_post(id=None):
+    if request.method =='GET':
+        post = Post.query.filter_by(id=id).first()
+
+        if post:
+            return jsonify(post.serialize()), 200
+        else:
+            return jsonify({"message": "Post with the id provided doesn't exist"}), 404

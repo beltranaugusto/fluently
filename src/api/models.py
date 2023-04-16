@@ -14,6 +14,16 @@ user_languages = db.Table('user_languages',
     db.Column('language_name', db.String(50), ForeignKey('language.language'), primary_key=True)
 )
 
+post_tags = db.Table('post_tags',
+    db.Column('post_id', db.Integer, ForeignKey('post.id'), primary_key=True),
+    db.Column('tag_name', db.String(120), ForeignKey('tag.tag_name'), primary_key=True)
+)
+
+event_attendees = db.Table('event_attendees',
+    db.Column('user_id', db.Integer(), ForeignKey('user.id'), primary_key=True),
+    db.Column('post_id', db.Integer(), ForeignKey('post.id'), primary_key=True)
+)
+
 class User(db.Model):
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True)
@@ -22,6 +32,9 @@ class User(db.Model):
     password = db.Column(db.String(500), unique=False, nullable=False)
     country = db.Column(db.String(50), ForeignKey("country.country"), nullable=False)
     city = db.Column(db.String(100), unique=False, nullable=False)
+    posts = db.relationship('Post', backref='user_posts')
+    # Location need to have this format to work with the maps: "21.442 8.234". A string with two numbers
+    location = db.Column(db.String(400), unique=False, nullable=False)
 
     # I declare the relationship in User, using the 'secondary' parameter with 'user_languages' as the value.
     languages = db.relationship('Language', secondary=user_languages, backref=db.backref('users', lazy=True))
@@ -33,11 +46,28 @@ class User(db.Model):
         return f'<User {self.email}>'
 
     def serialize(self):
-        return {
-            "id": self.id,
+
+        posts = []
+        languages = []
+        location = self.location.split(" ")
+
+        for item in self.posts:
+            posts.append([item.title, item.id])
+
+        for item in self.languages:
+            languages.append(item.language)
+
+        return{
+            "id":self.id,
+            "name": self.name,
             "email": self.email,
-            # do not serialize the password, its a security breach
-        }
+            "country": self.country,
+            "city": self.city,
+            "posts": posts,
+            "languages": languages,
+            "location": [float(location[0]), float(location[1])],
+            }
+    
     
 class Language(db.Model):
     __tablename__ = "language"
@@ -45,6 +75,10 @@ class Language(db.Model):
     language = db.Column(db.String(120), unique=True, nullable=False)
     def __repr__(self):
         return f'<Language {self.language}>'
+    def serialize(self):
+        return {
+            "language": self.language,
+        }
 
 class Country(db.Model):
     __tablename__ = "country"
@@ -54,3 +88,59 @@ class Country(db.Model):
     def __repr__(self):
         return f'<Country {self.country}>'
 
+class Post(db.Model):
+    __tablename__ = "post"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(120), unique=False, nullable=False)
+    description = db.Column(db.String(2000), unique=False, nullable=False)
+    user = db.Column(db.Integer(), ForeignKey("user.id"), nullable=False)   
+    date = db.Column(db.DateTime, nullable=False)
+    # Location need to have this format to work with the maps: "21.442 8.234". A string with two numbers
+    location = db.Column(db.String(400), unique=False, nullable=False)
+
+    tags = db.relationship('Tag', secondary=post_tags, backref=db.backref('posts', lazy=True))
+    attendees = db.relationship('User', secondary=event_attendees, backref='events_attended')
+
+    def __repr__(self):
+        return f'<Post {self.title}>'
+    
+    def serialize(self):
+
+    
+        tags = []
+        attendees = []
+        languages = []
+        location = self.location.split(" ")
+
+        for item in self.tags:
+            tags.append([item.tag_name, item.tag_color])
+
+        for item in self.attendees:
+            attendees.append([item.name, item.id])
+
+        for item in self.user_posts.languages:
+            languages.append(item.language)
+
+        return{
+            "id":self.id,
+            "user_name": self.user_posts.name,
+            "user_languages": languages,
+            "user_country": self.user_posts.country,
+            "user_city": self.user_posts.city,
+            "user_id": self.user,
+            "title": self.title,
+            "description":self.description,
+            "tags":tags,
+            "date":self.date,
+            "location": [float(location[0]), float(location[1])],
+            "attendees": attendees
+            }
+    
+
+class Tag(db.Model):
+    __tablename__ = "tag"
+    id = db.Column(db.Integer, primary_key=True)
+    tag_name = db.Column(db.String(120), unique=True, nullable=False)
+    tag_color = db.Column(db.String(120), unique=False, nullable=False)
+    def __repr__(self):
+        return f'<Tag {self.tag_name}>'
