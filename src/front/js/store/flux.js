@@ -126,6 +126,40 @@ const getState = ({ getStore, getActions, setStore }) => {
 				localStorage.removeItem("user_data");
 				setStore({ token: null, user_data: null });
 			  },
+
+			getLocation: () => {
+				const successCallback = (position) => {
+					localStorage.setItem("currentLocation", [position.coords.latitude, position.coords.longitude]);
+					setStore({ currentLocation: [position.coords.latitude, position.coords.longitude] });
+				};
+				const errorCallback = (error) => {
+					console.log(error);
+				};
+				navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+			},
+			
+			// Create Post Action
+			createPost: async (formData) => {
+				return fetch(`${process.env.BACKEND_URL}/createpost`, {
+					method: "POST",
+					body: JSON.stringify(formData),
+					headers: {
+						"Content-Type": "application/json",
+					},
+				})
+				.then(async (response) => {
+					const data = await response.json();
+					console.log(data)
+					if (data.error){
+						console.log("error")
+						return "error"
+					} else {
+						console.log("good")
+						return "bien"
+					}
+				})
+			},
+			
 		}
 	}
 };

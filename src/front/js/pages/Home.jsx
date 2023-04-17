@@ -3,15 +3,21 @@ import { Context } from "../store/appContext";
 import { PostCard } from "../component/PostCard.jsx";
 import { Grid, Card, TextInput, Button, Group, Space } from '@mantine/core';
 import { Search } from 'tabler-icons-react';
+import { getLocation } from "../tools/getLocation";
 
 export const Home = () => {
     const { store, actions } = useContext(Context);
     const [posts, setPosts] = useState([])
+    const [currentLocation, setCurrentLocation] = useState([])
+
+
 
     //
     useEffect(() => {
         postsList()
-    }, []);
+        if (store.currentLocation)
+            setCurrentLocation(store.currentLocation)
+    }, [store.currentLocation]);
 
     const postsList = async () => {
         setPosts(await actions.getPosts())
@@ -34,7 +40,7 @@ export const Home = () => {
                 <Grid.Col span={12}>
                     {
                         posts?.map((item) => {
-                            return <PostCard key={item.id} data={item} />;
+                            return <PostCard key={item.id} data={item} currentLocation={currentLocation} />;
                         })
                     }
                 </Grid.Col>

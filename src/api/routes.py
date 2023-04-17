@@ -112,33 +112,31 @@ def createpost():
 
         body = request.json
         tags = []
-
         dateFormatted = []
 
         # Retrieving the body data.
         title = body.get('title', None)
         description = body.get('description', None)
-        location = body.get('location', None)
         tags_list = body.get('tags', None)
-        dateUnformatted = body.get('date', None)
-        user = body.get('user', None)
-
-
-        # I gotta simplify this code
-        x = dateUnformatted.split(" ")
-        date = x[0]
-        time = x[1]
-        date = date.split("/")
-        time = time.split(":")
-        dateFormatted = date + time
-        dateFormatted = datetime(int(dateFormatted[0]), int(dateFormatted[1]), int(dateFormatted[2]), int(dateFormatted[3]), int(dateFormatted[4]) )
-
-        print(title, description, location, tags_list, dateUnformatted)
+        date = body.get('date', None)
+        time = body.get('hour', None)
+        user_id = body.get('user_id', None)
+        location = body.get('position', None)
 
         # Checking if it is complete.
-        if (title == "") or (description == "") or (location == "") or (tags_list == []) or (dateUnformatted == ""):
+        if (title == "") or (description == "") or (location == "") or (tags_list == []) or (date == "") or (time == ""):
             return jsonify({'message': "Form incomplete."}), 400
         else:
+
+            # Location formatting
+            location = str(location["lat"]) + " " + str(location["lng"])
+            
+            # Date Time formatting
+            # I gotta simplify this code
+            date = date[:9].split("-")
+            time = time.split(":")
+            dateFormatted = date + time
+            dateFormatted = datetime(int(dateFormatted[0]), int(dateFormatted[1]), int(dateFormatted[2]), int(dateFormatted[3]), int(dateFormatted[4]) )
             
             # Getting the tags objects using the list of tags received. And checking if the tag doesn't exist.
             for i in tags_list:
@@ -148,7 +146,7 @@ def createpost():
                 return jsonify({"message": "A tag received is not supported."}), 400
             
             # Database creation of Post.
-            post = Post(title=title, description=description, location=location, tags=tags, date=dateFormatted, user=user)
+            post = Post(title=title, description=description, location=location, tags=tags, date=dateFormatted, user=user_id)
             db.session.add(post)
             try:
                 db.session.commit()
@@ -177,4 +175,4 @@ def get_post(id=None):
         if post:
             return jsonify(post.serialize()), 200
         else:
-            return jsonify({"message": "Post with the id provided doesn't exist"}), 404
+            return jsonify({"error": "Post with the id provided doesn't exist"}), 404

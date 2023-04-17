@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Context } from "../store/appContext";
 import { useParams } from "react-router-dom";
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet'
 import { Card, Group, Text, Button, ActionIcon, Box, Grid, Avatar, ScrollArea, Badge } from '@mantine/core';
 import { DeviceGamepad, Star } from 'tabler-icons-react';
+import { redIcon } from "../tools/redIconMarker";
+
 
 
 
@@ -12,6 +14,7 @@ export const Post = () => {
     const { store, actions } = useContext(Context);
     const { id } = useParams();
     const [post, setPost] = useState()
+
 
     useEffect(() => {
         getPost()
@@ -94,14 +97,14 @@ export const Post = () => {
                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             />
-                            <Marker position={[post.location[0], post.location[1]]}>
+                            <Marker position={[post.location[0], post.location[1]]} icon={redIcon}>
                                 <Popup>
-                                    Aqui será el evento.
+                                    Event's Location.
                                 </Popup>
                             </Marker>
-                            <Marker position={[store.user_data.location[0], store.user_data.location[1]]}>
+                            <Marker position={[store.currentLocation[0], store.currentLocation[1]]}>
                                 <Popup>
-                                    Aquí estás tú.
+                                    You are here.
                                 </Popup>
                             </Marker>
                         </MapContainer>
