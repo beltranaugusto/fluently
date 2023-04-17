@@ -5,7 +5,7 @@ import { MantineProvider } from '@mantine/core';
 
 import { Shell } from "./pages/Shell.jsx";
 import { LoginRegister } from "./pages/LoginRegister.jsx";
-
+import { Test } from "./component/test.jsx";
 const Layout = () => {
     const basename = process.env.BASENAME || "";
     return (
@@ -13,6 +13,7 @@ const Layout = () => {
             <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme: 'light' }}>
                 <BrowserRouter basename={basename}>
                         <Routes>
+                            <Route element={<Test />} path="/test" />
                             <Route element={<LoginRegister />} path="/login" />
                             <Route element={<Shell />} path="/*" />
                         </Routes>
