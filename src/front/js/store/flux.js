@@ -5,6 +5,7 @@ const getState = ({ getStore, getActions, setStore }) => {
       		user_data: JSON.parse(localStorage.getItem("user_data")) || null,
 		},
 		actions: {
+
 			// Login action.
 			logIn: async (formData) => {
 				return fetch(`${process.env.BACKEND_URL}/login`, {
@@ -15,22 +16,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 					},
 				})
 				.then(async (response) => {
-					const data = await response.json();
-					
-					if (data.error){
-						console.log("error")
-						return "error"
+					response = await response.json();
+					if (response.error){
+						console.log("Error")
+						return false
 					} else {
-
-						// Store and Local Storage fill up.
-						console.log("good")
-						localStorage.setItem("token", data.token);
-						setStore({ token: data.token });
-
-						// Store the user_data
-						localStorage.setItem("user_data", JSON.stringify(data.user_data));
-						setStore({ user_data: data.user_data });
-						return "bien"
+						console.log("Good")
+						const userData = response.user_data
+						const token = response.token
+						localStorage.setItem("token", token);
+						localStorage.setItem("user_data", JSON.stringify(userData));
+						setStore({ token: token, user_data: userData });
+						return true
 					}
 				})
 			},
@@ -66,14 +63,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 					},
 				})
 				.then(async (response) => {
-					const data = await response.json();
-					console.log(data)
-					if (data.error){
+					response = await response.json();
+					if (response.error){
 						console.log("email not available")
-						return "error"
+						return false
 					} else {
 						console.log("email available")
-						return "bien"
+						return true
 					}
 				})
 			},
