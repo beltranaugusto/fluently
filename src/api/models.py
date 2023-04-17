@@ -33,8 +33,6 @@ class User(db.Model):
     country = db.Column(db.String(50), ForeignKey("country.country"), nullable=False)
     city = db.Column(db.String(100), unique=False, nullable=False)
     posts = db.relationship('Post', backref='user_posts')
-    # Location need to have this format to work with the maps: "21.442 8.234". A string with two numbers
-    location = db.Column(db.String(400), unique=False, nullable=False)
 
     # I declare the relationship in User, using the 'secondary' parameter with 'user_languages' as the value.
     languages = db.relationship('Language', secondary=user_languages, backref=db.backref('users', lazy=True))
@@ -49,7 +47,6 @@ class User(db.Model):
 
         posts = []
         languages = []
-        location = self.location.split(" ")
 
         for item in self.posts:
             posts.append([item.title, item.id])
@@ -64,8 +61,7 @@ class User(db.Model):
             "country": self.country,
             "city": self.city,
             "posts": posts,
-            "languages": languages,
-            "location": [float(location[0]), float(location[1])],
+            "languages": languages
             }
     
     

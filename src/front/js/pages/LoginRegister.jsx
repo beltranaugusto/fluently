@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
 import { Login } from "../component/Login.jsx";
-import { Register } from "../component/Register.jsx";
+import { Register } from "../component/register/Register.jsx";
 
 import { Center, Flex, Box } from '@mantine/core';
 
