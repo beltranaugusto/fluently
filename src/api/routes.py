@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from api.models import db, User, Country, Language, Tag, Post
 from api.utils import generate_sitemap, APIException
 from datetime import datetime
+from sqlalchemy import desc
 
 
 api = Blueprint('api', __name__)
@@ -74,7 +75,7 @@ def sign_up():
         if not languages:
             return jsonify({"message": "A language received is not supported."}), 400
         
-        country = Country.query.filter_by(country=country).first()
+        #country = Country.query.filter_by(country=country).first()
         if not country:
             return jsonify({"message": "A country received is not supported."}), 400
 
@@ -151,13 +152,14 @@ def createpost():
 
 @api.route('/getposts', methods=['GET'])
 def getting_posts():
-    if request.method =='GET':
-        posts = Post.query.all()
-        posts_list = []
-        for post in posts:
-            posts_list.append(post.serialize())
-
+    if request.method == 'GET':
+        page = request.args.get('page', default=1, type=int)
+        limit = request.args.get('limit', default=10, type=int)
+        posts = Post.query.order_by(desc(Post.id)).paginate(page=page, per_page=limit)
+        posts_list = [post.serialize() for post in posts.items]
         return jsonify(posts_list), 200
+
+
     
 @api.route('/getpost/<int:id>', methods=['GET'])
 def get_post(id=None):

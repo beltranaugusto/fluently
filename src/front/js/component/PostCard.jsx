@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { getDistanceFromLatLonInKm } from "../tools/calculateDistance";
 import { randomIcon } from "../tools/randomIcon";
 
-import { Card, Group, Text, Button, Badge, ActionIcon, Stack } from '@mantine/core';
+import { Card, Group, Text, Button, Badge, ThemeIcon, Stack } from '@mantine/core';
 
 export const PostCard = (props) => {
     const { store, actions } = useContext(Context);
@@ -15,14 +15,14 @@ export const PostCard = (props) => {
 
     return (
         <>
-            <Card key={id} shadow="sm" padding="lg" radius="md" mb="sm" withBorder>
+            <Card key={id} shadow="xs" padding="lg" radius="md" withBorder>
 
                 {/*Title and Icon*/}
                 <Group position="apart" mb="xs">
                     <Text weight={500} w="180px">{title}</Text>
-                    <ActionIcon size="xl">
+                    <ThemeIcon size="xl">
                         {randomIcon()}
-                    </ActionIcon>
+                    </ThemeIcon>
                 </Group>
 
                 {/*Info and Tags Group*/}
@@ -42,7 +42,7 @@ export const PostCard = (props) => {
                     </Stack>
 
                     {/*Tags*/}
-                    <Group position="right" maw={"100px"}>
+                    <Group position="right" maw={"150px"}>
                         <div className="d-flex flex-column">
                             {
                                 tags?.map((item, index) => {

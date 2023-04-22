@@ -3,6 +3,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import injectContext from "./store/appContext";
 import { MantineProvider } from '@mantine/core';
 
+import { ScrollArea } from '@mantine/core';
+
 import { Shell } from "./pages/Shell.jsx";
 import { LoginRegister } from "./pages/LoginRegister.jsx";
 import { Test } from "./component/test.jsx";
@@ -11,6 +13,7 @@ const Layout = () => {
     return (
         <>
             <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme: 'light' }}>
+                <ScrollArea scrollbarSize={4}>
                 <BrowserRouter basename={basename}>
                         <Routes>
                             <Route element={<Test />} path="/test" />
@@ -18,6 +21,7 @@ const Layout = () => {
                             <Route element={<Shell />} path="/*" />
                         </Routes>
                 </BrowserRouter>
+                </ScrollArea>
             </MantineProvider>
         </>
     );

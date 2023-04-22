@@ -89,7 +89,6 @@ export const Post = () => {
                 </Grid>
 
                 {/*Map with Location*/}
-
                 <Box className="border" sx={(theme) => ({ minHeight: "230px", textAlign: 'left', marginTop: theme.spacing.md, borderRadius: theme.radius.sm, cursor: 'pointer', })}>
                     {post?.location ?
                         <MapContainer className="map" center={[post.location[0], post.location[1]]} zoom={13} scrollWheelZoom={false}>
