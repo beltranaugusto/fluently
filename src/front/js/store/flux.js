@@ -75,8 +75,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			// Get Posts Action
-			getPosts: async () => {
-				return fetch(`${process.env.BACKEND_URL}/getposts/`, {
+			getPosts: async (page) => {
+				const limit = 6;
+				return fetch(`${process.env.BACKEND_URL}/getposts?page=${page}&limit=${limit}`, {
 					method: "GET",
 					headers: {
 						"Content-Type": "application/json",

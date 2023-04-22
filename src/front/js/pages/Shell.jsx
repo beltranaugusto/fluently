@@ -9,6 +9,7 @@ import { ShellNavbar } from "../component/ShellNavbar.jsx";
 import { Post } from "../component/Post.jsx";
 import { CreatePost } from "../component/CreatePost.jsx";
 import { Home } from "./Home.jsx";
+import { Profile } from "../component/Profile.jsx";
 
 export const Shell = () => {
 	const { store, actions } = useContext(Context);
@@ -42,6 +43,7 @@ export const Shell = () => {
 				<div className="max-width">
 					<Routes>
 						<Route exact path="/home" element={<Home />} />
+						<Route exact path="/profile" element={<Profile />} />
 						<Route exact path="/post/:id" element={<Post />} />
 						<Route exact path="/createpost" element={<CreatePost />} />
 					</Routes>

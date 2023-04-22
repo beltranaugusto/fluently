@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef, useCallback } from "react";
 import { Context } from "../store/appContext";
 import { PostCard } from "../component/PostCard.jsx";
 import { Grid, Card, TextInput, Button, Group, Space } from '@mantine/core';
@@ -9,19 +9,41 @@ export const Home = () => {
     const { store, actions } = useContext(Context);
     const [posts, setPosts] = useState([])
     const [currentLocation, setCurrentLocation] = useState([])
+    const [page, setPage] = useState(1)
 
+    // When scrolling to the end, change the page
+    const handleScroll = async () => {
+        const element = document.documentElement;
+        if (element.scrollHeight - element.scrollTop === element.clientHeight) {
+            setPage(prev => prev + 1)
+        }
+    };
 
+    // Fetch data of the current page
+    const postsList = async (page) => {
+        try {
+            let newPosts = await actions.getPosts(page)
+            setPosts(prevPosts => [...prevPosts, ...newPosts])
+        } catch (error) {
+            console.log("No more posts")
+        }
+    }
 
-    //
+    // I was having a unintended rerender that I fixed separating using two use effects
+    // Initialization useEffect
     useEffect(() => {
-        postsList()
+        postsList(page)
+    }, [page]);
+    // Current Location useEffect
+    useEffect(() => {
         if (store.currentLocation)
             setCurrentLocation(store.currentLocation)
     }, [store.currentLocation]);
-
-    const postsList = async () => {
-        setPosts(await actions.getPosts())
-    }
+    // Scroll event useEffect
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     return (
         <>
@@ -36,14 +58,17 @@ export const Home = () => {
                     <Button size="xs" variant="outline">Date</Button>
                 </Group>
             </Card>
-            <Grid>
-                <Grid.Col span={12}>
-                    {
-                        posts?.map((item) => {
-                            return <PostCard key={item.id} data={item} currentLocation={currentLocation} />;
-                        })
-                    }
-                </Grid.Col>
+            <Grid gutter={"md"}>
+                {
+                    posts?.map((item) => {
+                        return (
+                            <Grid.Col key={item.id} sm={12} md={6}>
+                                <PostCard key={item.id} data={item} currentLocation={currentLocation} />
+                            </Grid.Col>
+                        );
+                    })
+                }
+
             </Grid>
         </>
     );
