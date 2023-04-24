@@ -69,25 +69,27 @@ export const Profile = () => {
 
                         <Button variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}>Connect</Button>
 
-                        <Stack align="center" spacing={"0px"}>
-                            <Group spacing={"0px"}>
-                                <Text mt={"5px"} mb={"auto"} mr={"1px"} size="xs">34</Text>
-                                <ActionIcon size="md">
-                                    <CalendarEvent size="1.3em" />
-                                </ActionIcon>
-                            </Group>
-                            <Text size="xs" color="dimmed">Events Assisted</Text>
-                        </Stack>
+                        <Group>
+                            <Stack align="center" spacing={"0px"} mx={"sm"}>
+                                <Group spacing={"0px"}>
+                                    <Text mt={"5px"} mb={"auto"} mr={"1px"} size="xs">34</Text>
+                                    <ActionIcon size="md">
+                                        <CalendarEvent size="1.3em" />
+                                    </ActionIcon>
+                                </Group>
+                                <Text size="xs" color="dimmed">Events Assisted</Text>
+                            </Stack>
 
-                        <Stack align="center" spacing={"0px"}>
-                            <Group spacing={"0px"}>
-                                <Text mt={"5px"} mb={"auto"} mr={"1px"} size="xs">34</Text>
-                                <ActionIcon size="md">
-                                    <Location size="1.3em" />
-                                </ActionIcon>
-                            </Group>
-                            <Text size="xs" color="dimmed">Events Created</Text>
-                        </Stack>
+                            <Stack align="center" spacing={"0px"}>
+                                <Group spacing={"0px"}>
+                                    <Text mt={"5px"} mb={"auto"} mr={"1px"} size="xs">34</Text>
+                                    <ActionIcon size="md">
+                                        <Location size="1.3em" />
+                                    </ActionIcon>
+                                </Group>
+                                <Text size="xs" color="dimmed">Events Created</Text>
+                            </Stack>
+                        </Group>
 
                     </Group>
                 </Box>
