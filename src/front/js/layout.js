@@ -7,7 +7,7 @@ import { ScrollArea } from '@mantine/core';
 
 import { Shell } from "./pages/Shell.jsx";
 import { LoginRegister } from "./pages/LoginRegister.jsx";
-import { Test } from "./component/test.jsx";
+import { Test } from "./component/Test.jsx";
 const Layout = () => {
     const basename = process.env.BASENAME || "";
     return (
