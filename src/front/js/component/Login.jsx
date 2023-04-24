@@ -2,44 +2,41 @@ import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from 'react-router-dom';
 
-
-// Mantine Components and Icons import.
-import { useForm } from '@mantine/form';
-import { Lock, At, X } from 'tabler-icons-react';
 import { Button, Group, Box, TextInput, PasswordInput, Title, Space, Divider, Stack, Notification } from '@mantine/core';
+import { useForm } from '@mantine/form';
+
+import { Lock, At, X } from 'tabler-icons-react';
+
 
 export const Login = (props) => {
 
     const { store, actions } = useContext(Context);
     const navigate = useNavigate();
 
-    // State for checking if the login failed.
     const [loginFailed, setLoginFailed] = useState(false);
 
     useEffect(() => {
-
-        // Redirection to home if user is already logged.
         if (store.token != null) {
             navigate("/home");
         }
     }, [store.token, loginFailed]);
 
-    // I'm using the Form feature of Mantine to capture and validate the form values.
     const form = useForm({
-
-        // Setting up the inital values.
         initialValues: {
             email: '',
             password: '',
         },
-
-        // Setting up the validation conditions.
         validate: {
             email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
             password: (value) => (value.length > 7 ? null : 'Invalid Password'),
         },
     });
 
+    const logIn = async (values) => {
+        if (await actions.logIn(values) == false) {
+            setLoginFailed(true)
+        }
+    }
 
     return (
         <>
@@ -47,13 +44,7 @@ export const Login = (props) => {
             <Title order={1} className="text-center">Login</Title>
             <Space h="xl" />
             <Box mx="auto">
-                <form onSubmit={form.onSubmit(async (values) => {
-                    console.log(values)
-                    if (await actions.logIn(values) == "error") {
-                        setLoginFailed(true)
-                    }
-                })}>
-
+                <form onSubmit={form.onSubmit(async (values) => { logIn(values) })}>
                     {/*Email Input*/}
                     <TextInput size="md" label="Email" placeholder="your@email.com" icon={<At size="1rem" />} {...form.getInputProps('email')} />
                     <Space h="sm" />

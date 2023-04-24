@@ -1,22 +1,28 @@
-import React from "react";
+import React, { useContext } from "react";
+import { Context } from "../store/appContext";
 import { useNavigate } from 'react-router-dom';
-import { Card, Group, Text, Button, Badge, ActionIcon, Stack } from '@mantine/core';
-import { DeviceGamepad } from 'tabler-icons-react';
 
+import { getDistanceFromLatLonInKm } from "../tools/calculateDistance";
+import { randomIcon } from "../tools/randomIcon";
 
+import { Card, Group, Text, Button, Badge, ThemeIcon, Stack } from '@mantine/core';
 
-export const PostCard = () => {
+export const PostCard = (props) => {
+    const { store, actions } = useContext(Context);
+    const { title, date, tags, location, user_name, id } = props.data
+    const { currentLocation } = props
     const navigate = useNavigate();
+
     return (
         <>
-            <Card shadow="sm" padding="lg" radius="md" mb="sm" withBorder>
+            <Card key={id} shadow="xs" padding="lg" radius="md" withBorder>
 
                 {/*Title and Icon*/}
                 <Group position="apart" mb="xs">
-                    <Text weight={500} w="180px">Encuentro para hablar de videojuegos</Text>
-                    <ActionIcon size="xl">
-                        <DeviceGamepad size="2em" />
-                    </ActionIcon>
+                    <Text weight={500} w="180px">{title}</Text>
+                    <ThemeIcon size="xl">
+                        {randomIcon()}
+                    </ThemeIcon>
                 </Group>
 
                 {/*Info and Tags Group*/}
@@ -24,37 +30,34 @@ export const PostCard = () => {
 
                     {/*Info about the post*/}
                     <Stack maw={"300px"} spacing={"0px"}>
-                        <Text size="sm" color="dimmed" weight={500}>
-                            Miguel Otero
+                        <Text size="sm" color="dimmed" weight={500} transform="capitalize">
+                            {user_name}
                         </Text>
                         <Text size="xs" color="dimmed" weight={500}>
-                            <Text size="sm" span>5km Away</Text> - Plaza La Candelaria
+                            <Text size="sm" span>{getDistanceFromLatLonInKm(location[0], location[1], currentLocation[0], currentLocation[1])}km Away</Text>
                         </Text>
                         <Text size="sm" color="dimmed" weight={400}>
-                            16/04/23
+                            {date}
                         </Text>
                     </Stack>
 
                     {/*Tags*/}
-                    <Group position="right" maw={"100px"}>
+                    <Group position="right" maw={"150px"}>
                         <div className="d-flex flex-column">
-                            <Text size="xs" color="dimmed" align="right">
-                                <Badge color="blue" size="sm" radius="xs" variant="dot">Online</Badge>
-                            </Text>
-
-                            <Text size="xs" color="dimmed" align="right">
-                                <Badge color="yellow" size="sm" radius="xs" variant="dot">Casual</Badge>
-                            </Text>
-
-                            <Text size="xs" color="dimmed" align="right">
-                                <Badge color="green" size="sm" radius="xs" variant="dot">Beginner</Badge>
-                            </Text>
+                            {
+                                tags?.map((item, index) => {
+                                    return (
+                                        <Text size="xs" color="dimmed" align="right" key={index}>
+                                            <Badge color={item[1]} size="sm" radius="xs" variant="dot">{item[0]}</Badge>
+                                        </Text>);
+                                })
+                            }
                         </div>
                     </Group>
                 </Group>
 
                 {/*See More Button*/}
-                <Button onClick={() => { navigate("/post") }} variant="light" color="blue" fullWidth mt="md" radius="md">
+                <Button onClick={() => { navigate("/post/" + id) }} variant="light" color="blue" fullWidth mt="md" radius="md">
                     See More
                 </Button>
             </Card>
