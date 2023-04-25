@@ -13,7 +13,7 @@ const Layout = () => {
     return (
         <>
             <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme: 'light' }}>
-                <ScrollArea scrollbarSize={4}>
+                
                 <BrowserRouter basename={basename}>
                         <Routes>
                             <Route element={<Test />} path="/test" />
@@ -21,7 +21,7 @@ const Layout = () => {
                             <Route element={<Shell />} path="/*" />
                         </Routes>
                 </BrowserRouter>
-                </ScrollArea>
+                
             </MantineProvider>
         </>
     );
