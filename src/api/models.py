@@ -5,7 +5,6 @@ from sqlalchemy import ForeignKey
 # I achieved something I was stuck on. A User should be able to select multiple Languages when creating its account.
 # I wasn't very clear on which approach to take at the beginning, but at the end I settled with a Many to Many Relationship.
 
-
 db = SQLAlchemy()
 
 followers = db.Table(
@@ -31,26 +30,27 @@ event_attendees = db.Table('event_attendees',
 
 class User(db.Model):
     __tablename__ = "user"
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(500), unique=False, nullable=False)
     email = db.Column(db.String(500), unique=True, nullable=False)
     password = db.Column(db.String(500), unique=False, nullable=False)
     country = db.Column(db.String(50), ForeignKey("country.country"), nullable=False)
     city = db.Column(db.String(100), unique=False, nullable=False)
-    posts = db.relationship('Post', backref='user_posts')
     about_me = db.Column(db.String(800), unique=False, nullable=False, default="About me...")
+    is_school = db.Column(db.Boolean(), nullable=True)
+    is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=False)
 
+    posts = db.relationship('Post', backref='user_posts')
+    languages = db.relationship('Language', secondary=user_languages, backref=db.backref('users', lazy=True))
     followed = db.relationship(
         'User', secondary=followers,
         primaryjoin=(followers.c.follower_id == id),
         secondaryjoin=(followers.c.followed_id == id),
         backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
 
-    # I declare the relationship in User, using the 'secondary' parameter with 'user_languages' as the value.
-    languages = db.relationship('Language', secondary=user_languages, backref=db.backref('users', lazy=True))
-
-    is_school = db.Column(db.Boolean(), nullable=True)
-    is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=False)
+    def __repr__(self):
+        return f'<User {self.email}>'
 
     def follow(self, user):
         if not self.is_following(user):
@@ -63,9 +63,6 @@ class User(db.Model):
     def is_following(self, user):
         return self.followed.filter(
             followers.c.followed_id == user.id).count() > 0
-
-    def __repr__(self):
-        return f'<User {self.email}>'
 
     def serialize(self):
         print(self.followed)
@@ -96,13 +93,15 @@ class User(db.Model):
             "followed": followed
             }
     
-    
 class Language(db.Model):
     __tablename__ = "language"
+
     id = db.Column(db.Integer, primary_key=True)
     language = db.Column(db.String(120), unique=True, nullable=False)
+
     def __repr__(self):
         return f'<Language {self.language}>'
+    
     def serialize(self):
         return {
             "language": self.language,
@@ -110,9 +109,11 @@ class Language(db.Model):
 
 class Country(db.Model):
     __tablename__ = "country"
+
     id = db.Column(db.Integer, primary_key=True)
     country = db.Column(db.String(120), unique=True, nullable=False)
     user = db.relationship('User', backref='User Country')
+
     def __repr__(self):
         return f'<Country {self.country}>'
 
@@ -133,8 +134,6 @@ class Post(db.Model):
         return f'<Post {self.title}>'
     
     def serialize(self):
-
-    
         tags = []
         attendees = []
         languages = []
@@ -162,13 +161,13 @@ class Post(db.Model):
             "date":self.date,
             "location": [float(location[0]), float(location[1])],
             "attendees": attendees
-            }
-    
+            }  
 
 class Tag(db.Model):
     __tablename__ = "tag"
     id = db.Column(db.Integer, primary_key=True)
     tag_name = db.Column(db.String(120), unique=True, nullable=False)
     tag_color = db.Column(db.String(120), unique=False, nullable=False)
+    
     def __repr__(self):
         return f'<Tag {self.tag_name}>'

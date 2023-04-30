@@ -147,7 +147,6 @@ export const Profile = () => {
                     </Text>
                     <ScrollArea>
                         <Box sx={(theme) => ({ display: "flex" })}>
-
                             {
                                 user?.followed?.map((item) => {
                                     return (
