@@ -6,7 +6,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 		},
 		actions: {
 
-			// Login action.
 			logIn: async (formData) => {
 				return fetch(`${process.env.BACKEND_URL}/login`, {
 					method: "POST",
@@ -18,10 +17,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 				.then(async (response) => {
 					response = await response.json();
 					if (response.error){
-						console.log("Error")
+						console.log(response.error)
 						return false
 					} else {
-						console.log("Good")
+						console.log("Logged in succesfully")
 						const userData = response.user_data
 						const token = response.token
 						localStorage.setItem("token", token);
@@ -31,8 +30,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				})
 			},
+
+			logout: () => {
+				console.log("Logged Out")
+				localStorage.removeItem("token");
+				localStorage.removeItem("user_data");
+				setStore({ token: null, user_data: null });
+			  },
 			
-			// Sign Up Action
 			signUp: async (formData) => {
 				return fetch(`${process.env.BACKEND_URL}/sign_up`, {
 					method: "POST",
@@ -42,21 +47,19 @@ const getState = ({ getStore, getActions, setStore }) => {
 					},
 				})
 				.then(async (response) => {
-					const data = await response.json();
-					console.log(data)
-					if (data.error){
-						console.log("error")
-						return "error"
+					response = await response.json();
+					if (response.error){
+						console.log(response.error)
+						return false
 					} else {
-						console.log("good")
-						return "bien"
+						console.log("Signed Up Successfully")
+						return true
 					}
 				})
 			},
 
-			// Check Email Action
-			checkEmail: async (email) => {
-				return fetch(`${process.env.BACKEND_URL}/checkemail/` + email, {
+			getUser: async (id) => {
+				return fetch(`${process.env.BACKEND_URL}/getuser/` + id, {
 					method: "GET",
 					headers: {
 						"Content-Type": "application/json",
@@ -65,64 +68,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 				.then(async (response) => {
 					response = await response.json();
 					if (response.error){
-						console.log("email not available")
+						console.log(response.error)
 						return false
 					} else {
-						console.log("email available")
-						return true
+						console.log("Retrieval of user data successful")
+						return response
 					}
 				})
 			},
-
-			// Get Posts Action
-			getPosts: async (page) => {
-				const limit = 6;
-				return fetch(`${process.env.BACKEND_URL}/getposts?page=${page}&limit=${limit}`, {
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-					},
-				})
-				.then(async (response) => {
-					const data = await response.json();
-					console.log(data)
-					if (data.error){
-						console.log("there has been an error")
-						return false
-					} else {
-						console.log("here are your posts")
-						return data
-					}
-				})
-			},
-
-			// Get A Post Action
-			getPost: async (id) => {
-				return fetch(`${process.env.BACKEND_URL}/getpost/` + id, {
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-					},
-				})
-				.then(async (response) => {
-					const data = await response.json();
-					console.log(data)
-					if (data.error){
-						console.log("there has been an error")
-						return false
-					} else {
-						console.log("here are your posts")
-						return data
-					}
-				})
-			},
-			
-			// Logout Action
-			logout: () => {
-				localStorage.removeItem("token");
-				localStorage.removeItem("user_data");
-				setStore({ token: null, user_data: null });
-			  },
 
 			getLocation: () => {
 				const successCallback = (position) => {
@@ -134,51 +87,26 @@ const getState = ({ getStore, getActions, setStore }) => {
 				};
 				navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
 			},
-			
-			// Create Post Action
-			createPost: async (formData) => {
-				return fetch(`${process.env.BACKEND_URL}/createpost`, {
-					method: "POST",
-					body: JSON.stringify(formData),
-					headers: {
-						"Content-Type": "application/json",
-					},
-				})
-				.then(async (response) => {
-					const data = await response.json();
-					console.log(data)
-					if (data.error){
-						console.log("error")
-						return false
-					} else {
-						console.log("good")
-						return true
-					}
-				})
-			},
-			
 
-			// Get A User Action
-			getUser: async (id) => {
-				return fetch(`${process.env.BACKEND_URL}/getuser/` + id, {
+			checkEmail: async (email) => {
+				return fetch(`${process.env.BACKEND_URL}/checkemail/` + email, {
 					method: "GET",
 					headers: {
 						"Content-Type": "application/json",
 					},
 				})
 				.then(async (response) => {
-					const data = await response.json();
-					if (data.error){
-						console.log("there has been an error")
+					response = await response.json();
+					if (response.error){
+						console.log(response.error)
 						return false
 					} else {
-						console.log("retrieval of user data successful")
-						return data
+						console.log("Email available")
+						return true
 					}
 				})
 			},
 
-			// Follow User action.
 			follow: async (ids) => {
 				return fetch(`${process.env.BACKEND_URL}/follow`, {
 					method: "POST",
@@ -190,17 +118,79 @@ const getState = ({ getStore, getActions, setStore }) => {
 				.then(async (response) => {
 					response = await response.json();
 					if (response.error){
-						console.log("Error")
+						console.log(response.error)
 						return false
 					} else {
-						console.log("Good")
+						console.log("Followed User Successfully")
 						const updatedLoggedUserData = await getActions().getUser(ids.user1_id)
 						localStorage.setItem("user_data", JSON.stringify(updatedLoggedUserData));
 						setStore({user_data: updatedLoggedUserData });
+						console.log("Updated Local User Data")
 						return true
 					}
 				})
 			},
+
+			createPost: async (formData) => {
+				return fetch(`${process.env.BACKEND_URL}/createpost`, {
+					method: "POST",
+					body: JSON.stringify(formData),
+					headers: {
+						"Content-Type": "application/json",
+					},
+				})
+				.then(async (response) => {
+					response = await response.json();
+					if (response.error){
+						console.log(response.error)
+						return false
+					} else {
+						console.log("Created Post Successfully")
+						return true
+					}
+				})
+			},
+
+			getPosts: async (page) => {
+				const limit = 6;
+				return fetch(`${process.env.BACKEND_URL}/getposts?page=${page}&limit=${limit}`, {
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+				})
+				.then(async (response) => {
+					response = await response.json();
+					if (response.error){
+						console.log(response.error)
+						return false
+					} else {
+						console.log("Retrieval of Posts Successful")
+						return response
+					}
+				})
+			},
+
+			getPost: async (id) => {
+				return fetch(`${process.env.BACKEND_URL}/getpost/` + id, {
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+				})
+				.then(async (response) => {
+					response = await response.json();
+					if (response.error){
+						console.log(response.error)
+						return false
+					} else {
+						console.log("Retrieval of Post Successful")
+						return response
+					}
+				})
+			},
+			
+			
 
 		}
 	}
