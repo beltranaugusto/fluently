@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Context } from "../store/appContext";
 import { useParams } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet'
 import { Card, Group, Text, Button, ActionIcon, Box, Grid, Avatar, ScrollArea, Badge } from '@mantine/core';
 import { DeviceGamepad, Star } from 'tabler-icons-react';
@@ -14,14 +16,22 @@ export const Post = () => {
     const { store, actions } = useContext(Context);
     const { id } = useParams();
     const [post, setPost] = useState()
+    const navigate = useNavigate();
+
 
 
     useEffect(() => {
         getPost()
     }, []);
 
+
     const getPost = async () => {
-        setPost(await actions.getPost(id))
+        let data = await actions.getPost(id)
+        if (data) {
+            setPost(data)
+        } else {
+            navigate("/home")
+        }
     }
 
     return (
@@ -73,7 +83,15 @@ export const Post = () => {
                             <Group position="apart" align="start">
                                 <div>
                                     <Text size="md" transform="capitalize" weight={500}>{post?.user_name}</Text>
-                                    <Text size="xs" weight={500}>{post?.user_languages.map((item) => { return (item + " ") })}</Text>
+                                    <Text size="xs" weight={500}>{post?.user_languages?.map((language, index) => {
+                                        if (index === post?.user_languages.length - 1) {
+                                            return (language)
+                                        } else {
+                                            return (language + ", ")
+                                        }
+                                    }
+                                    )}
+                                    </Text>
                                     <Text mt={"sm"} size="xs" weight={500}>{post?.user_country}, {post?.user_city}</Text>
                                 </div>
                                 <div className="d-flex">

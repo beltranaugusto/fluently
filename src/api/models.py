@@ -8,7 +8,12 @@ from sqlalchemy import ForeignKey
 
 db = SQLAlchemy()
 
-# This declares how tables User and Language will connect.
+followers = db.Table(
+    'followers',
+    db.Column('follower_id', db.Integer, ForeignKey('user.id'), primary_key=True),
+    db.Column('followed_id', db.Integer, ForeignKey('user.id'), primary_key=True)
+)
+
 user_languages = db.Table('user_languages',
     db.Column('user_id', db.Integer, ForeignKey('user.id'), primary_key=True),
     db.Column('language_name', db.String(50), ForeignKey('language.language'), primary_key=True)
@@ -33,23 +38,47 @@ class User(db.Model):
     country = db.Column(db.String(50), ForeignKey("country.country"), nullable=False)
     city = db.Column(db.String(100), unique=False, nullable=False)
     posts = db.relationship('Post', backref='user_posts')
+    about_me = db.Column(db.String(800), unique=False, nullable=False, default="About me...")
+
+    followed = db.relationship(
+        'User', secondary=followers,
+        primaryjoin=(followers.c.follower_id == id),
+        secondaryjoin=(followers.c.followed_id == id),
+        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
 
     # I declare the relationship in User, using the 'secondary' parameter with 'user_languages' as the value.
     languages = db.relationship('Language', secondary=user_languages, backref=db.backref('users', lazy=True))
 
     is_school = db.Column(db.Boolean(), nullable=True)
-    is_active = db.Column(db.Boolean(), unique=False, nullable=False)
+    is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=False)
+
+    def follow(self, user):
+        if not self.is_following(user):
+            self.followed.append(user)
+
+    def unfollow(self, user):
+        if self.is_following(user):
+            self.followed.remove(user)
+
+    def is_following(self, user):
+        return self.followed.filter(
+            followers.c.followed_id == user.id).count() > 0
 
     def __repr__(self):
         return f'<User {self.email}>'
 
     def serialize(self):
+        print(self.followed)
 
         posts = []
         languages = []
+        followed = []
+
+        for item in self.followed:
+            followed.append({"id": item.id, "name": item.name})
 
         for item in self.posts:
-            posts.append([item.title, item.id])
+            posts.append(item.serialize())
 
         for item in self.languages:
             languages.append(item.language)
@@ -61,7 +90,10 @@ class User(db.Model):
             "country": self.country,
             "city": self.city,
             "posts": posts,
-            "languages": languages
+            "languages": languages,
+            "about_me": self.about_me,
+            "is_school": self.is_school,
+            "followed": followed
             }
     
     

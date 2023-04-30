@@ -88,7 +88,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(data)
 					if (data.error){
 						console.log("there has been an error")
-						return "error"
+						return false
 					} else {
 						console.log("here are your posts")
 						return data
@@ -109,7 +109,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(data)
 					if (data.error){
 						console.log("there has been an error")
-						return "error"
+						return false
 					} else {
 						console.log("here are your posts")
 						return data
@@ -149,14 +149,59 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(data)
 					if (data.error){
 						console.log("error")
-						return "error"
+						return false
 					} else {
 						console.log("good")
-						return "bien"
+						return true
 					}
 				})
 			},
 			
+
+			// Get A User Action
+			getUser: async (id) => {
+				return fetch(`${process.env.BACKEND_URL}/getuser/` + id, {
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+				})
+				.then(async (response) => {
+					const data = await response.json();
+					if (data.error){
+						console.log("there has been an error")
+						return false
+					} else {
+						console.log("retrieval of user data successful")
+						return data
+					}
+				})
+			},
+
+			// Follow User action.
+			follow: async (ids) => {
+				return fetch(`${process.env.BACKEND_URL}/follow`, {
+					method: "POST",
+					body: JSON.stringify(ids),
+					headers: {
+						"Content-Type": "application/json",
+					},
+				})
+				.then(async (response) => {
+					response = await response.json();
+					if (response.error){
+						console.log("Error")
+						return false
+					} else {
+						console.log("Good")
+						const updatedLoggedUserData = await getActions().getUser(ids.user1_id)
+						localStorage.setItem("user_data", JSON.stringify(updatedLoggedUserData));
+						setStore({user_data: updatedLoggedUserData });
+						return true
+					}
+				})
+			},
+
 		}
 	}
 };
