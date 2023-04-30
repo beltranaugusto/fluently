@@ -43,7 +43,7 @@ export const Shell = () => {
 				<div className="max-width">
 					<Routes>
 						<Route exact path="/home" element={<Home />} />
-						<Route exact path="/profile" element={<Profile />} />
+						<Route exact path="/profile/:id" element={<Profile />} />
 						<Route exact path="/post/:id" element={<Post />} />
 						<Route exact path="/createpost" element={<CreatePost />} />
 					</Routes>

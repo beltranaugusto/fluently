@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Button, Group, Box, Space, ActionIcon, Center, Checkbox, Text } from '@mantine/core';
+import { Button, Group, Box, Space, ActionIcon, Center, Checkbox, Text, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 
 import { ArrowBack } from 'tabler-icons-react';
@@ -9,9 +9,14 @@ export const StepThree = (props) => {
 
     const form = useForm({
         initialValues: {
-            school: false,
+            is_school: false,
+            about_me: ''
         },
-    },
+
+        validate: {
+            about_me: (value) => (value.length > 15 ? null : 'About me too short.'),
+        }
+    }
     );
 
     const nextStep = async (formValues) => {
@@ -22,28 +27,32 @@ export const StepThree = (props) => {
     return (
         <Box mx="auto">
             <form onSubmit={form.onSubmit((formValues) => {
+                console.log(formValues)
                 nextStep(formValues);
             })}>
 
-                {/*Info Message*/}
-                <Box sx={(theme) => ({
-                    width: '240px',
-                    textAlign: 'center'
-                })}>
-
-                    <Text fz="sm" fw={500}>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    </Text>
-                </Box>
+                {/*About Me Input*/}
+                <Textarea
+                    placeholder="About Me"
+                    label="About Me"
+                    description="Write a small paragraph talking a little bit of yourself or your organization."
+                    autosize
+                    withAsterisk
+                    minRows={1}
+                    maxRows={3}
+                    {...form.getInputProps('about_me')}
+                />
 
                 <Space h="sm" />
 
                 {/*Are you a School? Input*/}
-                <Center>
-                    <Checkbox
-                        label="Are you a School?"
-                    />
-                </Center>
+
+                <Text color="dimmed" size={"xs"} mb={"xs"}>If you are creating the profile of a school/academy please check this box. This allows your profile to appear featured in a special section.</Text>
+                <Checkbox
+                    label="Are you a School?"
+                    {...form.getInputProps('is_school')}
+                />
+
                 <Space h="sm" />
 
                 {/*Continue Button*/}

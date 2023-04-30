@@ -47,7 +47,7 @@ def get_user(id=None):
         if user:
             return jsonify(user.serialize()), 200
         else:
-            return jsonify({"message": "User with the id provided doesn't exist"}), 404
+            return jsonify({"error": "User with the id provided doesn't exist"}), 404
 
 
 @api.route('/sign_up', methods=['POST'])
@@ -62,6 +62,8 @@ def sign_up():
         languages_list = body.get('languages', None)
         country = body.get('country', None)
         city = body.get('city', None)
+        is_school = body.get('is_school', None)
+        about_me = body.get('about_me', None)
 
         form = {'name': name, 'email':email, 'password': password, 'languages_list': languages_list, 'country': country, 'city': city} # I need to add is School
         for key, value in list(form.items()):
@@ -80,7 +82,7 @@ def sign_up():
             return jsonify({"message": "A country received is not supported."}), 400
 
         password_hash = generate_password_hash(password)
-        user = User(name=name, email=email, password=password_hash, languages=languages, country=country, city=city, is_school=False, is_active=True)
+        user = User(name=name, email=email, password=password_hash, languages=languages, country=country, city=city, about_me=about_me, is_school=is_school, is_active=True)
         db.session.add(user)
         try:
             db.session.commit()
@@ -170,3 +172,30 @@ def get_post(id=None):
             return jsonify(post.serialize()), 200
         else:
             return jsonify({"error": "Post with the id provided doesn't exist"}), 404
+        
+@api.route('/follow', methods=['POST'])
+def follow():
+    if request.method =='POST':
+
+        body = request.json
+
+        id_of_user1 = body.get('user1_id', None)
+        id_of_user2 = body.get('user2_id', None)
+
+        user1 = User.query.filter_by(id=id_of_user1).first()
+        user2 = User.query.filter_by(id=id_of_user2).first()
+
+        try:
+            if user1.is_following(user2):
+                user1.unfollow(user2)
+                db.session.commit()
+                return jsonify({"message": "Unfollowed user successfully"}), 200
+            else:
+                user1.follow(user2)
+                db.session.commit()
+                return jsonify({"message": "Followed user successfully"}), 200
+        except Exception as error:
+            print(error.args)
+            db.session.rollback()
+            return  jsonify({"message": f"Error: {error.args}", "error": "error"}), 500
+
