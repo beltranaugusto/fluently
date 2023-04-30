@@ -78,7 +78,7 @@ export const Post = () => {
                         <Avatar className="mx-auto" size="lg" radius="sm" />
                     </Grid.Col>
                     <Grid.Col span={9}>
-                        <Box sx={(theme) => ({ textAlign: 'left', padding: theme.spacing.sm, borderRadius: theme.radius.sm, cursor: 'pointer', })}>
+                        <Box onClick={() => { navigate("/profile/" + post?.user_id) }} sx={(theme) => ({ textAlign: 'left', padding: theme.spacing.sm, borderRadius: theme.radius.sm, cursor: 'pointer', })}>
 
                             <Group position="apart" align="start">
                                 <div>

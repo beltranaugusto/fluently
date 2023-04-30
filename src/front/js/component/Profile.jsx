@@ -21,8 +21,6 @@ export const Profile = () => {
     const { id } = useParams();
     const navigate = useNavigate();
 
-
-
     useEffect(() => {
         getUser()
     }, [id]);
@@ -45,8 +43,6 @@ export const Profile = () => {
         for (let item of store.user_data?.followed) {
             if (item.id === user.id) {
                 return true
-            } else {
-                return false
             }
         }
     }
@@ -55,7 +51,7 @@ export const Profile = () => {
     return (
         <>
             <Card shadow="md" padding="lg" radius="md" mb="sm" withBorder align="right">
-                {user.is_school ? <Badge m={"3px"} size="lg" radius="sm" color={"green"} variant="filled">Academy</Badge> : null}
+                {user?.is_school ? <Badge m={"3px"} size="lg" radius="sm" color={"green"} variant="filled">Academy</Badge> : null}
 
                 {/*Profile Pic*/}
                 <Center>
@@ -68,9 +64,9 @@ export const Profile = () => {
                     {/*Name, Country, Languages and Rating*/}
                     <Group position="apart" align="start">
                         <div>
-                            <Text size="md" transform="capitalize" weight={500}>{user.name}</Text>
+                            <Text size="md" transform="capitalize" weight={500}>{user?.name}</Text>
                             <Text size="xs" weight={500}>{user?.languages?.map((language, index) => {
-                                if (index === user.languages.length - 1) {
+                                if (index === user?.languages.length - 1) {
                                     return (language)
                                 } else {
                                     return (language + ", ")
@@ -78,7 +74,7 @@ export const Profile = () => {
                             }
                             )}
                             </Text>
-                            <Text size="xs" weight={500}>{user.country}, {user.city}</Text>
+                            <Text size="xs" weight={500}>{user?.country}, {user?.city}</Text>
                         </div>
                         <Stack align="center" spacing={"0px"}>
                             <Group spacing={"0px"}>
@@ -93,7 +89,7 @@ export const Profile = () => {
 
                     {/*About Me*/}
                     <Text size={"xs"} mt={"sm"} maw={"30rem"}>
-                        {user.about_me}
+                        {user?.about_me}
 
                     </Text>
 
@@ -101,19 +97,14 @@ export const Profile = () => {
                     <Group position="apart" align="center" mt={"md"}>
 
                         {checkIfFollowed() ?
-                            <Button onClick={() => actions.follow({ user1_id: store.user_data.id, user2_id: user.id })} variant="gradient" gradient={{ from: 'indigo', to: 'cyan', deg: 105 }}>Unfollow</Button>
+                            <Button onClick={() => actions.follow({ user1_id: store.user_data.id, user2_id: user?.id })} variant="gradient" gradient={{ from: 'indigo', to: 'cyan', deg: 105 }}>Unfollow</Button>
                             :
-                            (store.user_data.id === user.id ?
+                            (store.user_data.id === user?.id ?
                                 <Button disabled variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}>Follow</Button>
                                 :
-                                <Button onClick={() => actions.follow({ user1_id: store.user_data.id, user2_id: user.id })} variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}>Connect</Button>
+                                <Button onClick={() => actions.follow({ user1_id: store.user_data.id, user2_id: user?.id })} variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}>Connect</Button>
                             )
                         }
-
-
-
-
-
 
                         <Group>
                             <Stack align="center" spacing={"0px"} mx={"sm"}>
