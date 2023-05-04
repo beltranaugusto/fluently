@@ -5,17 +5,22 @@ import { useNavigate } from 'react-router-dom';
 import { getDistanceFromLatLonInKm } from "../tools/calculateDistance";
 import { randomIcon } from "../tools/randomIcon";
 
-import { Card, Group, Text, Button, Badge, ThemeIcon, Stack } from '@mantine/core';
+import { Card, Group, Text, Button, Badge, ThemeIcon, Stack, Center } from '@mantine/core';
 
 export const PostCard = (props) => {
     const { store, actions } = useContext(Context);
-    const { title, date, tags, location, user_name, id } = props.data
+    const { title, date, tags, location, user_name, id, available } = props.data
     const { currentLocation } = props
     const navigate = useNavigate();
 
     return (
         <>
             <Card key={id} shadow="xs" padding="lg" radius="md" withBorder>
+                {available ? null :
+                    <Center>
+                        <Badge color="red" size="sm" fw={500} order={4}>Date has already passed</Badge>
+                    </Center>}
+
 
                 {/*Title and Icon*/}
                 <Group position="apart" mb="xs">

@@ -127,6 +127,8 @@ class Post(db.Model):
     # Location need to have this format to work with the maps: "21.442 8.234". A string with two numbers
     location = db.Column(db.String(400), unique=False, nullable=False)
 
+    available = db.Column(db.Boolean(), unique=False, nullable=False, default=True)
+
     tags = db.relationship('Tag', secondary=post_tags, backref=db.backref('posts', lazy=True))
     attendees = db.relationship('User', secondary=event_attendees, backref='events_attended')
 
@@ -160,7 +162,8 @@ class Post(db.Model):
             "tags":tags,
             "date":self.date,
             "location": [float(location[0]), float(location[1])],
-            "attendees": attendees
+            "attendees": attendees,
+            "available": self.available
             }  
 
 class Tag(db.Model):
