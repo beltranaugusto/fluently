@@ -5,21 +5,17 @@ import { useNavigate } from 'react-router-dom';
 import { getDistanceFromLatLonInKm } from "../tools/calculateDistance";
 import { randomIcon } from "../tools/randomIcon";
 
-import { Card, Group, Text, Button, Badge, ThemeIcon, Stack, Center } from '@mantine/core';
+import { Card, Group, Text, Button, Badge, ThemeIcon, Stack, Center, Flex } from '@mantine/core';
 
 export const PostCard = (props) => {
     const { store, actions } = useContext(Context);
-    const { title, date, tags, location, user_name, id, available } = props.data
+    const { title, date, tags, location, user_name, id, available, user_id } = props.data
     const { currentLocation } = props
     const navigate = useNavigate();
 
     return (
         <>
-            <Card key={id} shadow="xs" padding="lg" radius="md" withBorder>
-                {available ? null :
-                    <Center>
-                        <Badge color="red" size="sm" fw={500} order={4}>Date has already passed</Badge>
-                    </Center>}
+            <Card key={id} shadow="xs" padding="lg" radius="md" mih={"12rem"} withBorder>
 
 
                 {/*Title and Icon*/}
@@ -35,15 +31,24 @@ export const PostCard = (props) => {
 
                     {/*Info about the post*/}
                     <Stack maw={"300px"} spacing={"0px"}>
-                        <Text size="sm" color="dimmed" weight={500} transform="capitalize">
-                            {user_name}
+                        <Text size={"xs"} color="dimmed" fw={600}>
+                            <Badge onClick={() => { navigate("/profile/" + user_id) }} sx={() => ({ backgroundColor: "transparent", cursor: "pointer" })} size="xs" color="gray">
+                                {user_name}
+                            </Badge>
                         </Text>
-                        <Text size="xs" color="dimmed" weight={500}>
-                            <Text size="sm" span>{getDistanceFromLatLonInKm(location[0], location[1], currentLocation[0], currentLocation[1])}km Away</Text>
+                        <Text size={"xs"} color="blue" fw={600}>
+                            <Badge size="xs">{getDistanceFromLatLonInKm(location[0], location[1], currentLocation[0], currentLocation[1])}km</Badge> Away
                         </Text>
-                        <Text size="sm" color="dimmed" weight={400}>
-                            {date}
-                        </Text>
+                        {available ?
+                            <Text size={"xs"} color="green" fw={600}>
+                                <Badge size="xs" color="green">
+                                    {date}
+                                </Badge>
+                            </Text> :
+                            <Text size={"xs"} fw={700}>
+                                <Badge size="xs" color="red">Event is over!</Badge></Text>
+                        }
+
                     </Stack>
 
                     {/*Tags*/}
@@ -65,6 +70,7 @@ export const PostCard = (props) => {
                 <Button onClick={() => { navigate("/post/" + id) }} variant="light" color="blue" fullWidth mt="md" radius="md">
                     See More
                 </Button>
+
             </Card>
         </>
     );

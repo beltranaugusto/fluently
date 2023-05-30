@@ -17,6 +17,7 @@ export const Profile = () => {
     const [user, setUser] = useState([])
 
     const [currentLocation, setCurrentLocation] = useState([])
+    const [eventsToggle, setEventsToggle] = useState(false)
 
     const { id } = useParams();
     const navigate = useNavigate();
@@ -160,25 +161,52 @@ export const Profile = () => {
 
             <Center>
                 {user?.posts?.length === 0 ?
-                    <Badge color="orange" size="lg" fw={500} my={"md"} order={4}>{store.user_data.id === user?.id ? "You Have No Active Events" : "This User has No Active Events"}</Badge>
+                    <Badge className={`${eventsToggle ? "transparentBg" : null}`} onClick={() => setEventsToggle(false)} color="orange" size="lg" fw={500} my={"md"} order={4}>{store.user_data.id === user?.id ? "You Have No Active Events" : "This User has No Active Events"}</Badge>
                     :
-                    <Badge color="green" size="lg" fw={500} my={"md"} order={4}>{store.user_data.id === user?.id ? "Your Active Events" : "Active Events of this User"}</Badge>
+                    <Badge
+                        onClick={() => setEventsToggle(false)}
+                        color="green" size="lg" fw={500} my={"md"} order={4}
+                        className={`${eventsToggle ? "transparentBg" : null}`}
+                    >
+                        {store.user_data.id === user?.id ? "Your Active Events" : "Active Events of this User"}
+                    </Badge>
                 }
+
+                {store.user_data.id === user?.id ?
+                    <Badge
+                        onClick={() => setEventsToggle(true)}
+                        className={`${eventsToggle ? null : "transparentBg"}`}
+                        ml={"xs"} color="orange" size="lg" fw={500} my={"md"} order={4}
+                    >
+                        Finished Events
+                    </Badge>
+                    : null}
+
+
             </Center>
 
             <Grid gutter={"md"}>
                 {
                     user?.posts?.map((item) => {
-                        // if (item.available == true) {
-                        return (
-                            <Grid.Col key={item.id} sm={12} md={6}>
-                                <PostCard key={item.id} data={item} currentLocation={currentLocation} />
-                            </Grid.Col>
-                        )
-                        // }
+                        if (eventsToggle) {
+                            if (item.available == false) {
+                                return (
+                                    <Grid.Col key={item.id} sm={12} md={6}>
+                                        <PostCard key={item.id} data={item} currentLocation={currentLocation} />
+                                    </Grid.Col>
+                                )
+                            }
+                        } else {
+                            if (item.available == true) {
+                                return (
+                                    <Grid.Col key={item.id} sm={12} md={6}>
+                                        <PostCard key={item.id} data={item} currentLocation={currentLocation} />
+                                    </Grid.Col>
+                                )
+                            }
+                        }
                     })
                 }
-
             </Grid>
         </>
     );
