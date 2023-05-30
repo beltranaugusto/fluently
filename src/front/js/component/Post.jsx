@@ -128,10 +128,17 @@ export const Post = () => {
                         : null}
                 </Box>
 
-                {/*I Will Go Button*/}
-                <Group mt={"md"} grow>
-                    <Button onClick={() => { navigate(-1) }} variant="gradient" gradient={{ from: 'lime', to: 'green' }}>I Will Go</Button>
-                </Group>
+                {/* I Will Go Button*/}
+                {post?.available ?
+                    <Group mt={"md"} grow>
+                        <Button onClick={() => { navigate(-1) }} variant="gradient" gradient={{ from: 'lime', to: 'green' }}>I Will Go</Button>
+                    </Group>
+                    :
+                    <Group mt={"md"} grow>
+                        <Button variant="gradient" gradient={{ from: 'orange', to: 'red' }}>Event is Over</Button>
+                    </Group>
+                }
+
 
                 {/*Attendees*/}
                 <Box className="border" sx={(theme) => ({ marginTop: theme.spacing.md, padding: theme.spacing.md, minHeight: "70px", backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0], borderRadius: theme.radius.sm, })}>
@@ -153,6 +160,17 @@ export const Post = () => {
                         </Box>
                     </ScrollArea>
                 </Box>
+
+                {/*Comentarios*/}
+                {post?.available ?
+                    null
+                    :
+                    <Box className="border" sx={(theme) => ({ marginTop: theme.spacing.md, padding: theme.spacing.md, minHeight: "70px", backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0], borderRadius: theme.radius.sm, })}>
+                        <Text size="sm" color="dimmed" weight={400}> Comments
+                        </Text>
+
+                    </Box>
+                }
 
             </Card >
         </>

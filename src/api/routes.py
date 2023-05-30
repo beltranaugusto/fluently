@@ -145,8 +145,6 @@ def createpost():
 
         # Location formatting
         location = str(location["lat"]) + " " + str(location["lng"])
-        print(date)
-        print(time)
         # Date Time formatting
         # I gotta simplify this code
         date = date[:10].split("-")
@@ -190,3 +188,14 @@ def get_post(id=None):
             return jsonify({"error": "Post with the id provided doesn't exist"}), 404
         
 
+@api.before_app_first_request
+def testo():
+    print("Updating posts statuses")
+    now = datetime.utcnow()
+    events = Post.query.filter(Post.date < now, Post.available != False).all()
+
+    for event in events:
+        event.available = False
+        db.session.add(event)
+
+    db.session.commit()

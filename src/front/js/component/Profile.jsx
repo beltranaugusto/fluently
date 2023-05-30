@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Context } from "../store/appContext";
 import { useParams } from "react-router-dom";
-import { Card, Group, Text, Button, ActionIcon, Box, Grid, Avatar, ScrollArea, Badge, Center, Stack, Divider, Space } from '@mantine/core';
+import { Card, Group, Text, Button, ActionIcon, Box, Grid, Avatar, ScrollArea, Badge, Center, Stack, Divider, Space, Title } from '@mantine/core';
 import { DeviceGamepad, Star, CalendarEvent, Location } from 'tabler-icons-react';
 import { redIcon } from "../tools/redIconMarker";
 import { PostCard } from "./PostCard.jsx";
@@ -17,6 +17,7 @@ export const Profile = () => {
     const [user, setUser] = useState([])
 
     const [currentLocation, setCurrentLocation] = useState([])
+    const [eventsToggle, setEventsToggle] = useState(false)
 
     const { id } = useParams();
     const navigate = useNavigate();
@@ -50,7 +51,7 @@ export const Profile = () => {
 
     return (
         <>
-            <Card shadow="md" padding="lg" radius="md" mb="sm" withBorder align="right">
+            <Card shadow="xs" padding="lg" radius="md" withBorder align="right">
                 {user?.is_school ? <Badge m={"3px"} size="lg" radius="sm" color={"green"} variant="filled">Academy</Badge> : null}
 
                 {/*Profile Pic*/}
@@ -157,14 +158,53 @@ export const Profile = () => {
 
             </Card >
 
+
+            <Center>
+                {user?.posts?.length === 0 ?
+                    <Badge className={`${eventsToggle ? "transparentBg" : null}`} onClick={() => setEventsToggle(false)} color="orange" size="lg" fw={500} my={"md"} order={4}>{store.user_data.id === user?.id ? "You Have No Active Events" : "This User has No Active Events"}</Badge>
+                    :
+                    <Badge
+                        onClick={() => setEventsToggle(false)}
+                        color="green" size="lg" fw={500} my={"md"} order={4}
+                        className={`${eventsToggle ? "transparentBg" : null}`}
+                    >
+                        {store.user_data.id === user?.id ? "Your Active Events" : "Active Events of this User"}
+                    </Badge>
+                }
+
+                {store.user_data.id === user?.id ?
+                    <Badge
+                        onClick={() => setEventsToggle(true)}
+                        className={`${eventsToggle ? null : "transparentBg"}`}
+                        ml={"xs"} color="orange" size="lg" fw={500} my={"md"} order={4}
+                    >
+                        Finished Events
+                    </Badge>
+                    : null}
+
+
+            </Center>
+
             <Grid gutter={"md"}>
                 {
                     user?.posts?.map((item) => {
-                        return (
-                            <Grid.Col key={item.id} sm={12} md={6}>
-                                <PostCard key={item.id} data={item} currentLocation={currentLocation} />
-                            </Grid.Col>
-                        )
+                        if (eventsToggle) {
+                            if (item.available == false) {
+                                return (
+                                    <Grid.Col key={item.id} sm={12} md={6}>
+                                        <PostCard key={item.id} data={item} currentLocation={currentLocation} />
+                                    </Grid.Col>
+                                )
+                            }
+                        } else {
+                            if (item.available == true) {
+                                return (
+                                    <Grid.Col key={item.id} sm={12} md={6}>
+                                        <PostCard key={item.id} data={item} currentLocation={currentLocation} />
+                                    </Grid.Col>
+                                )
+                            }
+                        }
                     })
                 }
             </Grid>
