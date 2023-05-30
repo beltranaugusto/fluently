@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Context } from "../store/appContext";
 import { useParams } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet'
 import { Card, Group, Text, Button, ActionIcon, Box, Grid, Avatar, ScrollArea, Badge } from '@mantine/core';
 import { DeviceGamepad, Star } from 'tabler-icons-react';
@@ -14,14 +16,22 @@ export const Post = () => {
     const { store, actions } = useContext(Context);
     const { id } = useParams();
     const [post, setPost] = useState()
+    const navigate = useNavigate();
+
 
 
     useEffect(() => {
         getPost()
     }, []);
 
+
     const getPost = async () => {
-        setPost(await actions.getPost(id))
+        let data = await actions.getPost(id)
+        if (data) {
+            setPost(data)
+        } else {
+            navigate("/home")
+        }
     }
 
     return (
@@ -68,12 +78,20 @@ export const Post = () => {
                         <Avatar className="mx-auto" size="lg" radius="sm" />
                     </Grid.Col>
                     <Grid.Col span={9}>
-                        <Box sx={(theme) => ({ textAlign: 'left', padding: theme.spacing.sm, borderRadius: theme.radius.sm, cursor: 'pointer', })}>
+                        <Box onClick={() => { navigate("/profile/" + post?.user_id) }} sx={(theme) => ({ textAlign: 'left', padding: theme.spacing.sm, borderRadius: theme.radius.sm, cursor: 'pointer', })}>
 
                             <Group position="apart" align="start">
                                 <div>
                                     <Text size="md" transform="capitalize" weight={500}>{post?.user_name}</Text>
-                                    <Text size="xs" weight={500}>{post?.user_languages.map((item) => { return (item + " ") })}</Text>
+                                    <Text size="xs" weight={500}>{post?.user_languages?.map((language, index) => {
+                                        if (index === post?.user_languages.length - 1) {
+                                            return (language)
+                                        } else {
+                                            return (language + ", ")
+                                        }
+                                    }
+                                    )}
+                                    </Text>
                                     <Text mt={"sm"} size="xs" weight={500}>{post?.user_country}, {post?.user_city}</Text>
                                 </div>
                                 <div className="d-flex">
@@ -110,10 +128,17 @@ export const Post = () => {
                         : null}
                 </Box>
 
-                {/*I Will Go Button*/}
-                <Group mt={"md"} grow>
-                    <Button onClick={() => { navigate(-1) }} variant="gradient" gradient={{ from: 'lime', to: 'green' }}>I Will Go</Button>
-                </Group>
+                {/* I Will Go Button*/}
+                {post?.available ?
+                    <Group mt={"md"} grow>
+                        <Button onClick={() => { navigate(-1) }} variant="gradient" gradient={{ from: 'lime', to: 'green' }}>I Will Go</Button>
+                    </Group>
+                    :
+                    <Group mt={"md"} grow>
+                        <Button variant="gradient" gradient={{ from: 'orange', to: 'red' }}>Event is Over</Button>
+                    </Group>
+                }
+
 
                 {/*Attendees*/}
                 <Box className="border" sx={(theme) => ({ marginTop: theme.spacing.md, padding: theme.spacing.md, minHeight: "70px", backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0], borderRadius: theme.radius.sm, })}>
@@ -135,6 +160,17 @@ export const Post = () => {
                         </Box>
                     </ScrollArea>
                 </Box>
+
+                {/*Comentarios*/}
+                {post?.available ?
+                    null
+                    :
+                    <Box className="border" sx={(theme) => ({ marginTop: theme.spacing.md, padding: theme.spacing.md, minHeight: "70px", backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0], borderRadius: theme.radius.sm, })}>
+                        <Text size="sm" color="dimmed" weight={400}> Comments
+                        </Text>
+
+                    </Box>
+                }
 
             </Card >
         </>

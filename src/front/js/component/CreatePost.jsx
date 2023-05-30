@@ -44,7 +44,7 @@ export const CreatePost = () => {
     // Calls the action of creating the post and asynchronously checks if it was a success. This is called when submitting the form.
     const checkSuccess = async (values) => {
         console.log({ ...values, position: position, user_id: store.user_data.id })
-        if (await actions.createPost({ ...values, position: position, user_id: store.user_data.id }) == "bien") {
+        if (await actions.createPost({ ...values, position: position, user_id: store.user_data.id })) {
             setCreationSuccess(true)
         }
     }

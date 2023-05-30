@@ -27,7 +27,7 @@ export const ShellNavbar = () => {
                         <Group spacing="xs">
                             <Button size="xs" variant="outline"><Users size="1.2em" /></Button>
                             <Button size="xs" variant="outline"><Bell size="1.2em" /></Button>
-                            <Button size="xs" variant="outline" onClick={() => { navigate("/profile") }}><User size="1.2em" /></Button>
+                            <Button size="xs" variant="outline" onClick={() => { navigate("/profile/" + store.user_data.id) }}><User size="1.2em" /></Button>
                         </Group>
                     </Flex>
                 </Flex>

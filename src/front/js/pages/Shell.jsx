@@ -32,7 +32,7 @@ export const Shell = () => {
 				footer={<Footer height={60} p="sm">
 					<Container mb="lg">
 						<Group position="apart" >
-							<Button onClick={actions.logout} variant="gradient" gradient={{ from: 'orange', to: 'red' }}>Logout</Button>
+							<Button onClick={() => { navigate("/login"); actions.logout() }} variant="gradient" gradient={{ from: 'orange', to: 'red' }}>Logout</Button>
 							<Button onClick={() => { navigate("/createpost") }} variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}>New Event</Button>
 							<Button onClick={() => { navigate(-1) }} variant="gradient" gradient={{ from: 'indigo', to: 'cyan' }}>Go Back</Button>
 						</Group>
@@ -43,7 +43,7 @@ export const Shell = () => {
 				<div className="max-width">
 					<Routes>
 						<Route exact path="/home" element={<Home />} />
-						<Route exact path="/profile" element={<Profile />} />
+						<Route exact path="/profile/:id" element={<Profile />} />
 						<Route exact path="/post/:id" element={<Post />} />
 						<Route exact path="/createpost" element={<CreatePost />} />
 					</Routes>
